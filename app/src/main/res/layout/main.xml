@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<TableLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/main"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+
+    tools:context="pariseight.colormatch.MainActivity"
+    android:orientation="vertical"
+    android:weightSum="1"
+    android:background="@drawable/background">
+
+    <TableRow
+        android:layout_centerHorizontal="true"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <Button
+            android:layout_marginTop="8dp"
+            android:id="@+id/bPlay"
+            style="@android:style/Widget.Holo.Light.Button"
+            android:layout_width="150dp"
+            android:layout_height="150dp" />
+    </TableRow>
+
+    <TableRow>
+    <Button
+        android:layout_marginTop="8dp"
+        android:text="@string/SOUND"
+        android:id="@+id/bSound"
+        style="@android:style/Widget.Holo.Light.Button.Inset" />
+
+    <Button
+        android:layout_marginTop="8dp"
+        android:text="@string/A_PROPOS"
+        android:id="@+id/bAPropos"
+        style="@android:style/Widget.Holo.Light.Button.Inset" />
+</TableRow>
+
+
+
+</TableLayout>

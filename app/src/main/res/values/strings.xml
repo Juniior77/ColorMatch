@@ -1,0 +1,7 @@
+<resources>
+    <string name="app_name">ColorMatch</string>
+    <string name="PLAY">Play</string>
+    <string name="SOUND">Sound</string>
+    <string name="A_PROPOS">A Propos</string>
+    <string name="a_propos">A Propos:</string>
+</resources>
