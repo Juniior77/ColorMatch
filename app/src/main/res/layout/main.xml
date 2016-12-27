@@ -23,6 +23,7 @@
             style="@android:style/Widget.Holo.Light.Button"
             android:layout_width="150dp"
             android:layout_height="150dp" />
+
     </TableRow>
 
     <TableRow>

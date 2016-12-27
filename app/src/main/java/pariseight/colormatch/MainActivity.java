@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.os.CountDownTimer;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -11,6 +12,9 @@ import android.text.style.EasyEditSpan;
 import android.util.DisplayMetrics;
 import android.view.View;
 import android.widget.Button;
+import android.widget.TextView;
+
+import org.w3c.dom.Text;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -27,7 +31,6 @@ public class MainActivity extends AppCompatActivity {
         ButtonPlay = (Button)findViewById(R.id.bPlay);
         ButtonSound = (Button)findViewById(R.id.bSound);
         ButtonAPropos = (Button)findViewById(R.id.bAPropos);
-
 
         ButtonPlay.setOnClickListener(new View.OnClickListener() {
             @Override

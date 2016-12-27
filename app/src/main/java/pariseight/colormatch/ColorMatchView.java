@@ -2,8 +2,6 @@ package pariseight.colormatch;
 
 
 import android.content.Context;
-import android.content.Intent;
-import android.content.SharedPreferences;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -11,21 +9,13 @@ import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.media.MediaPlayer;
-import android.os.SystemClock;
-import android.provider.Settings;
 import android.util.AttributeSet;
-import android.util.DisplayMetrics;
 import android.util.Log;
-import android.view.KeyEvent;
 import android.view.MotionEvent;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 
-import java.lang.reflect.Array;
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
 import java.util.Random;
 
 /**
@@ -109,8 +99,6 @@ public class ColorMatchView extends SurfaceView implements SurfaceHolder.Callbac
     public ColorMatchView(Context context, AttributeSet attrs) {
         super(context, attrs);
 
-
-
         // permet d'ecouter les surfaceChanged, surfaceCreated, surfaceDestroyed
         holder = getHolder();
         holder.addCallback(this);
@@ -140,9 +128,6 @@ public class ColorMatchView extends SurfaceView implements SurfaceHolder.Callbac
         vert = BitmapFactory.decodeResource(mRes, R.drawable.vertclaire);
         vide = BitmapFactory.decodeResource(mRes, R.drawable.vide);*/
         win = BitmapFactory.decodeResource(mRes, R.drawable.win);
-
-        // initialisation des parmametres du jeu
-        //initparameters();
 
         // creation du thread
         cv_thread = new Thread(this);
@@ -241,6 +226,7 @@ public class ColorMatchView extends SurfaceView implements SurfaceHolder.Callbac
         loadRandCol();
         carteTopAnchor = (getHeight() - carteHeight * carteTileSize) / 2;
         carteLeftAnchor = (getWidth() - carteWidth * carteTileSize) / 2;
+
         if ((cv_thread != null) && (!cv_thread.isAlive())) {
             cv_thread.start();
             Log.e("-FCT-", "cv_thread.start()");
