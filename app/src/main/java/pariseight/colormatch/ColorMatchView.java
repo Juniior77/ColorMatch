@@ -14,6 +14,7 @@ import android.media.MediaPlayer;
 import android.os.SystemClock;
 import android.provider.Settings;
 import android.util.AttributeSet;
+import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.MotionEvent;
@@ -63,7 +64,7 @@ public class ColorMatchView extends SurfaceView implements SurfaceHolder.Callbac
     // taille de la carte
     static final int carteWidth = 10;
     static final int carteHeight = 14;
-    static final int carteTileSize = 96;
+    public int carteTileSize;
     public ArrayList tabCol = new ArrayList();
 
     // constante modelisant les differentes types de cases
@@ -108,6 +109,8 @@ public class ColorMatchView extends SurfaceView implements SurfaceHolder.Callbac
     public ColorMatchView(Context context, AttributeSet attrs) {
         super(context, attrs);
 
+
+
         // permet d'ecouter les surfaceChanged, surfaceCreated, surfaceDestroyed
         holder = getHolder();
         holder.addCallback(this);
@@ -118,7 +121,7 @@ public class ColorMatchView extends SurfaceView implements SurfaceHolder.Callbac
         // chargement des images
         mContext = context;
         mRes = mContext.getResources();
-        /*bleu = BitmapFactory.decodeResource(mRes, R.mipmap.bleu);
+        bleu = BitmapFactory.decodeResource(mRes, R.mipmap.bleu);
         ciel = BitmapFactory.decodeResource(mRes, R.mipmap.ciel);
         jaun = BitmapFactory.decodeResource(mRes, R.mipmap.jaune);
         marr = BitmapFactory.decodeResource(mRes, R.mipmap.marron);
@@ -126,8 +129,8 @@ public class ColorMatchView extends SurfaceView implements SurfaceHolder.Callbac
         rose = BitmapFactory.decodeResource(mRes, R.mipmap.rose);
         turq = BitmapFactory.decodeResource(mRes, R.mipmap.turquoise);
         vert = BitmapFactory.decodeResource(mRes, R.mipmap.vertclaire);
-        vide = BitmapFactory.decodeResource(mRes, R.mipmap.vide);*/
-        bleu = BitmapFactory.decodeResource(mRes, R.drawable.bleu);
+        vide = BitmapFactory.decodeResource(mRes, R.mipmap.vide);
+        /*bleu = BitmapFactory.decodeResource(mRes, R.drawable.bleu);
         ciel = BitmapFactory.decodeResource(mRes, R.drawable.ciel);
         jaun = BitmapFactory.decodeResource(mRes, R.drawable.jaune);
         marr = BitmapFactory.decodeResource(mRes, R.drawable.marron);
@@ -135,7 +138,7 @@ public class ColorMatchView extends SurfaceView implements SurfaceHolder.Callbac
         rose = BitmapFactory.decodeResource(mRes, R.drawable.rose);
         turq = BitmapFactory.decodeResource(mRes, R.drawable.turquoise);
         vert = BitmapFactory.decodeResource(mRes, R.drawable.vertclaire);
-        vide = BitmapFactory.decodeResource(mRes, R.drawable.vide);
+        vide = BitmapFactory.decodeResource(mRes, R.drawable.vide);*/
         win = BitmapFactory.decodeResource(mRes, R.drawable.win);
 
         // initialisation des parmametres du jeu
@@ -199,6 +202,29 @@ public class ColorMatchView extends SurfaceView implements SurfaceHolder.Callbac
     // initialisation du jeu
     public void initparameters(boolean soundAct) {
 
+        /*DisplayMetrics metrics = mContext.getResources().getDisplayMetrics();
+        switch(metrics.densityDpi){
+            case DisplayMetrics.DENSITY_LOW:
+                carteTileSize = 36;
+                break;
+            case DisplayMetrics.DENSITY_MEDIUM:
+                carteTileSize = 48;
+                break;
+            case DisplayMetrics.DENSITY_HIGH:
+                carteTileSize = 72;
+                break;
+            case DisplayMetrics.DENSITY_XHIGH:
+                carteTileSize = 96;
+                break;
+            case DisplayMetrics.DENSITY_XXHIGH:
+                carteTileSize = 144;
+                break;
+            case DisplayMetrics.DENSITY_XXXHIGH:
+                carteTileSize = 192;
+                break;
+        }
+        Log.i("Constructor:", "CarteTilesize: " + carteTileSize + " Density: " + metrics.densityDpi);
+*/
         sound = soundAct;
 
         paint = new Paint();
