@@ -3,6 +3,7 @@ package pariseight.colormatch;
 import android.app.Activity;
 import android.view.View;
 import android.os.Bundle;
+import android.widget.Button;
 
 /**
  * Created by Guillaume on 23/12/2016.
@@ -11,6 +12,8 @@ import android.os.Bundle;
 public class ColorMatchActivity extends Activity {
 
     public boolean sound = true;
+    public boolean oldGame = false;
+    Button ButtonTest;
 
     private ColorMatchView mColorMatchView;
 
@@ -19,15 +22,25 @@ public class ColorMatchActivity extends Activity {
     {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.color_match);
-        sound = getIntent().getExtras().getBoolean("soundActiv");
+        sound = getIntent().getExtras().getBoolean(String.valueOf(R.string.ACTIVE_SOUND));
+        oldGame = getIntent().getExtras().getBoolean(String.valueOf(R.string.ACTIVE_OLD_GAME));
+
+
         mColorMatchView = (ColorMatchView)findViewById(R.id.ColorMarchView);
         mColorMatchView.setVisibility(View.VISIBLE);
-        mColorMatchView.initparameters(sound);
-    }
+        mColorMatchView.init(sound, oldGame);
 
-    @Override
-    protected void onPause() {
-        super.onPause();
+
+        ButtonTest = (Button)findViewById(R.id.buttonTest);
+
+        ButtonTest.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                mColorMatchView.saveCarte();
+                mColorMatchView.saveHighScore();
+            }
+        });
+
     }
 }
 

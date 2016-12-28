@@ -6,4 +6,12 @@
     <string name="a_propos">A Propos:</string>
     <string name="MY_PREF">PREF_COLOR_MATCH</string>
     <string name="HIGH_SCORE">KEY_HIGH_SCORE</string>
+    <string name="OLD_CARTE">KEY_CARTE</string>
+    <string name="OLD_LVL">KEY_OLD_LVL</string>
+    <string name="OLD_SCORE">KEY_OLD_SCORE</string>
+    <string name="OLD_TEMPS">KEY_OLD_TEMPS</string>
+    <string name="REPRENDRE_JEUX">Reprendre</string>
+    <string name="ACTIVE_SOUND">ACTIVE_SOUND</string>
+    <string name="ACTIVE_OLD_GAME">ACTIVE_OLD_GAME</string>
+
 </resources>
