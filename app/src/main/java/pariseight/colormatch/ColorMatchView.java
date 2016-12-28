@@ -1,7 +1,7 @@
 package pariseight.colormatch;
 
-
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -9,6 +9,7 @@ import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.media.MediaPlayer;
+import android.os.CountDownTimer;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.MotionEvent;
@@ -35,6 +36,7 @@ public class ColorMatchView extends SurfaceView implements SurfaceHolder.Callbac
     private Bitmap vert;
     private Bitmap vide;
     private Bitmap win;
+    private Bitmap gameover;
 
     // Declaration des objets Ressources et Context permettant d'acceder aux ressources de notre application et de les charger
     private Resources mRes;
@@ -71,7 +73,7 @@ public class ColorMatchView extends SurfaceView implements SurfaceHolder.Callbac
     //Déclaration des variable de gestion des evenement du jeux
     public static int Lvl = 1;
     public int nbCoup = 0;
-    public boolean nextLvl = false;         //Boolean pour passer au level suivant
+    public boolean newmap = false;         //Boolean pour passer au level suivant
     int score = 0;
 
     //Declaration du mediaPlayer pour gérer les son du jeux
@@ -88,6 +90,9 @@ public class ColorMatchView extends SurfaceView implements SurfaceHolder.Callbac
     SurfaceHolder holder;
 
     Paint paint;
+    Chrono mChrono;
+    SharedPreferences mPref;
+    SharedPreferences.Editor mEditor;
 
     /**
      * The constructor called from the main JetBoy activity
@@ -102,9 +107,6 @@ public class ColorMatchView extends SurfaceView implements SurfaceHolder.Callbac
         holder = getHolder();
         holder.addCallback(this);
 
-        // chargement des images
-        mContext = context;
-        mRes = mContext.getResources();
         // chargement des images
         mContext = context;
         mRes = mContext.getResources();
@@ -127,12 +129,29 @@ public class ColorMatchView extends SurfaceView implements SurfaceHolder.Callbac
         vert = BitmapFactory.decodeResource(mRes, R.drawable.vertclaire);
         vide = BitmapFactory.decodeResource(mRes, R.drawable.vide);
         win = BitmapFactory.decodeResource(mRes, R.drawable.win);
+        gameover = BitmapFactory.decodeResource(mRes, R.drawable.gameover);
 
         // creation du thread
         cv_thread = new Thread(this);
         // prise de focus pour gestion des touches
         setFocusable(true);
+    }
 
+    //Persistence
+    public void saveHighScore()
+    {
+        mPref = getContext().getSharedPreferences(String.valueOf(R.string.MY_PREF), Context.MODE_PRIVATE);
+        mEditor = mPref.edit();
+        int tmpScore = 0;
+        if(mPref.contains(String.valueOf(R.string.HIGH_SCORE)))
+        {
+            tmpScore = mPref.getInt(String.valueOf(R.string.HIGH_SCORE), 0);
+        }
+        if(score > tmpScore)
+        {
+            mEditor.putInt(String.valueOf(R.string.HIGH_SCORE), score);
+            mEditor.apply();
+        }
     }
 
     //Generation du nombre des couleurs
@@ -140,19 +159,19 @@ public class ColorMatchView extends SurfaceView implements SurfaceHolder.Callbac
         int nbCouleur = 8, nbColMin = 10, nbColMax = 120;
         Random rand = new Random();
 
-        tabCol.add(0, 138);
-        Log.i("-> FCT <-", "tabCol0: NbCol: " + tabCol.get(0));
+        tabCol.add(0, 136);//20);
+        //Log.i("-> FCT <-", "tabCol0: NbCol: " + tabCol.get(0));
         for (int i = 1; i < 8; i++) {
-            //int colRand = nbColMin + rand.nextInt(20 - nbColMin);
-            //if ((colRand % 2) != 0) {
-            //    colRand += 1;
-            //}
+        //    int colRand = nbColMin + rand.nextInt(20 - nbColMin);
+        //    if ((colRand % 2) != 0) {
+        //        colRand += 1;
+        //    }
             tabCol.add(i, 0);//colRand);
-            //nbColMax -= colRand;
+        //    nbColMax -= colRand;
             //Log.i("-> FCT <-", "tabCol[i]: " + i + " nbColMax: " + tabCol.get(i));
         }
-        tabCol.add(8, 2);
-        Log.i("-> FCT <-", "tabCol8: nbColMax: " + tabCol.get(8));
+        tabCol.add(8, 4);//nbColMax);
+        //Log.i("-> FCT <-", "tabCol8: nbColMax: " + tabCol.get(8));
         loadCarte();
     }
 
@@ -202,10 +221,8 @@ public class ColorMatchView extends SurfaceView implements SurfaceHolder.Callbac
         Log.i("Constructor:", "CarteTilesize: " + carteTileSize + " Density: " + metrics.densityDpi);
 */
         sound = soundAct;
-
         paint = new Paint();
         paint.setColor(0xff0000);
-
         paint.setDither(true);
         paint.setColor(0xFFFFFF00);
         paint.setStyle(Paint.Style.STROKE);
@@ -217,17 +234,27 @@ public class ColorMatchView extends SurfaceView implements SurfaceHolder.Callbac
         loadRandCol();
         carteTopAnchor = (getHeight() - carteHeight * carteTileSize) / 2;
         carteLeftAnchor = (getWidth() - carteWidth * carteTileSize) / 2;
-
+        mChrono = new Chrono(30000, 1000);
         if ((cv_thread != null) && (!cv_thread.isAlive())) {
             cv_thread.start();
             Log.e("-FCT-", "cv_thread.start()");
         }
+        mChrono.start();
     }
 
     // dessin du gagne si gagne
-    private void paintwin(Canvas canvas) {
+    private void win(Canvas canvas) {
         canvas.drawBitmap(win, carteLeftAnchor * 7, carteTopAnchor * 4, null);
         Lvl += 1;
+        nbCoup = 0;
+        mChrono.onFinish();
+        saveHighScore();
+        score = 0;
+    }
+
+    // dessin du gameOver si finTemps ou reste 1 couleur
+    private void gameOver(Canvas canvas) {
+        canvas.drawBitmap(gameover, carteLeftAnchor * 7, carteTopAnchor * 4, null);
         score = 0;
         nbCoup = 0;
     }
@@ -242,7 +269,7 @@ public class ColorMatchView extends SurfaceView implements SurfaceHolder.Callbac
         canvas.drawText("Level: " + Lvl, 675, 75, paint);
     }
 
-    private void printScore(Canvas canvas) {
+    private void paintScore(Canvas canvas) {
         Paint paint = new Paint();
         paint.setColor(Color.TRANSPARENT);
         paint.setStyle(Paint.Style.FILL);
@@ -250,6 +277,16 @@ public class ColorMatchView extends SurfaceView implements SurfaceHolder.Callbac
         paint.setColor(Color.WHITE);
         paint.setTextSize(70);
         canvas.drawText("Score: " + score, 75, 75, paint);
+    }
+
+    private void paintTemps(Canvas canvas) {
+        Paint paint = new Paint();
+        paint.setColor(Color.TRANSPARENT);
+        paint.setStyle(Paint.Style.FILL);
+        canvas.drawPaint(paint);
+        paint.setColor(Color.WHITE);
+        paint.setTextSize(70);
+        canvas.drawText("Score: " + mChrono.temps, 75, 75, paint);
     }
 
     // dessin de la carte du jeu
@@ -292,15 +329,24 @@ public class ColorMatchView extends SurfaceView implements SurfaceHolder.Callbac
     // dessin du jeu (fond uni, en fonction du jeu gagne ou pas dessin du plateau et du joueur des diamants et des fleches)
     private void nDraw(Canvas canvas) {
         canvas.drawRGB(44, 44, 44);
-        if (checkIsWon()) {
-            nextLvl = true;
+        if (checkIsWon())
+        {
+            newmap = true;
             paintcarte(canvas);
-            paintwin(canvas);
+            win(canvas);
 
-        } else {
+        }
+        else if(mChrono.finTemps==true)
+        {
+            newmap = true;
+            gameOver(canvas);
+        }
+        else
+        {
             paintcarte(canvas);
             paintLvl(canvas);
-            printScore(canvas);
+            //paintScore(canvas);
+            paintTemps(canvas);
         }
 
     }
@@ -327,7 +373,6 @@ public class ColorMatchView extends SurfaceView implements SurfaceHolder.Callbac
         return IsWon;
     }
 
-
     // callback sur le cycle de vie de la surfaceview
     public void surfaceChanged(SurfaceHolder holder, int format, int width, int height) {
         Log.i("-> FCT <-", "surfaceChanged " + width + " - " + height);
@@ -338,7 +383,6 @@ public class ColorMatchView extends SurfaceView implements SurfaceHolder.Callbac
         Log.i("-> FCT <-", "surfaceCreated");
 
     }
-
 
     public void surfaceDestroyed(SurfaceHolder arg0) {
         Log.i("-> FCT <-", "surfaceDestroyed");
@@ -352,7 +396,7 @@ public class ColorMatchView extends SurfaceView implements SurfaceHolder.Callbac
         Canvas c = null;
         while (in)
         {
-            if(nextLvl == false) {
+            if(newmap == false) {
                 try {
                     cv_thread.sleep(50);
                     // currentStepZone = (currentStepZone + 1) % maxStepZone;
@@ -547,10 +591,10 @@ public class ColorMatchView extends SurfaceView implements SurfaceHolder.Callbac
     public boolean onTouchEvent(MotionEvent event) {
 
         //Test si "Gagner" est afficher pour initaliser une nouvel carte
-        if(nextLvl == true)
+        if(newmap == true)
         {
             initparameters(sound);
-            nextLvl = false;
+            newmap = false;
         }
 
         posClickX = (int)(event.getX() - carteLeftAnchor) / carteTileSize;
@@ -581,5 +625,26 @@ public class ColorMatchView extends SurfaceView implements SurfaceHolder.Callbac
             mMediaPlayer.setVolume((1),(1));
             mMediaPlayer.start();
         }
+    }
+}
+class Chrono extends CountDownTimer
+{
+    long temps;
+    boolean finTemps;
+    public Chrono(long startTime, long interval)
+    {
+      super(startTime, interval);
+        finTemps = false;
+    }
+
+    @Override
+    public void onFinish()
+    {
+        finTemps = true;
+    }
+    @Override
+    public void onTick(long millisUntilFinished)
+    {
+        temps = millisUntilFinished / 1000;
     }
 }

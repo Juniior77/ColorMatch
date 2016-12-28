@@ -1,7 +1,6 @@
 package pariseight.colormatch;
 
 import android.app.Activity;
-import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.os.Bundle;
 
@@ -26,4 +25,9 @@ public class ColorMatchActivity extends Activity {
         mColorMatchView.initparameters(sound);
     }
 
+    @Override
+    protected void onPause() {
+        super.onPause();
+    }
 }
+

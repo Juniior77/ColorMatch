@@ -4,4 +4,6 @@
     <string name="SOUND">Sound</string>
     <string name="A_PROPOS">A Propos</string>
     <string name="a_propos">A Propos:</string>
+    <string name="MY_PREF">PREF_COLOR_MATCH</string>
+    <string name="HIGH_SCORE">KEY_HIGH_SCORE</string>
 </resources>

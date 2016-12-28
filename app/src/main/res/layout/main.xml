@@ -38,8 +38,19 @@
         android:text="@string/A_PROPOS"
         android:id="@+id/bAPropos"
         style="@android:style/Widget.Holo.Light.Button.Inset" />
-</TableRow>
 
+    </TableRow>
+
+    <TableRow>
+
+        <TextView
+            android:text="TextView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/textView6"
+            android:textStyle="bold" />
+
+    </TableRow>
 
 
 </TableLayout>
