@@ -1,7 +1,7 @@
 package pariseight.colormatch;
 
 import android.content.Context;
-import android.content.Intent;
+
 import android.content.SharedPreferences;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
@@ -10,12 +10,15 @@ import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.media.MediaPlayer;
+
 import android.os.CountDownTimer;
 import android.util.AttributeSet;
 import android.util.Log;
+
 import android.view.MotionEvent;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
+
 
 
 import java.util.ArrayList;
@@ -156,7 +159,7 @@ public class ColorMatchView extends SurfaceView implements SurfaceHolder.Callbac
             mEditor.putInt(String.valueOf(R.string.HIGH_SCORE), score);
             mEditor.apply();
         }
-        Log.i("-> FCT <-", "tmpScore: " + tmpScore);
+        //Log.i("-> FCT <-", "tmpScore: " + tmpScore);
     }
 
     //Persistence de la carte
@@ -170,12 +173,12 @@ public class ColorMatchView extends SurfaceView implements SurfaceHolder.Callbac
             }
         }
         mEditor.putString(String.valueOf(R.string.OLD_CARTE), carteStr.toString());
-        Log.i("-> FCT <-", "carteStr: " + carteStr.toString());
+        //Log.i("-> FCT <-", "carteStr: " + carteStr.toString());
         mEditor.putInt(String.valueOf(R.string.OLD_LVL), Lvl);
         mEditor.putInt(String.valueOf(R.string.OLD_SCORE), score);
         mEditor.putLong(String.valueOf(R.string.OLD_TEMPS), mChrono.temps);
         mEditor.apply();
-        Log.i("-> FCT <-", "Lvl: " + Lvl + " Score: " + score + " Chrono : " + mChrono.temps);
+        //Log.i("-> FCT <-", "Lvl: " + Lvl + " Score: " + score + " Chrono : " + mChrono.temps);
     }
 
     //Chargement de la carte sauvegarder
@@ -183,17 +186,17 @@ public class ColorMatchView extends SurfaceView implements SurfaceHolder.Callbac
     {
         String oldCarte = mPref.getString(String.valueOf(R.string.OLD_CARTE), "");
         StringTokenizer myOldCarte = new StringTokenizer(oldCarte, ";");
-        Log.i("-> FCT <-", "StringCarte: " + oldCarte + " StringTokenizer: " + myOldCarte);
+        //Log.i("-> FCT <-", "StringCarte: " + oldCarte + " StringTokenizer: " + myOldCarte);
         for (int i = 0; i < carteHeight; i++) {
             for (int j = 0; j < carteWidth; j++) {
                 carte[i][j] = Integer.parseInt(myOldCarte.nextToken());
-                Log.i("-> FCT <-", "carte["+i+"]["+j+"]: " + carte[i][j]);
+                //Log.i("-> FCT <-", "carte["+i+"]["+j+"]: " + carte[i][j]);
             }
         }
         Lvl = mPref.getInt(String.valueOf(R.string.OLD_LVL), 0);
         score = mPref.getInt(String.valueOf(R.string.OLD_SCORE), 0);
         tempsRestant = (mPref.getLong(String.valueOf(R.string.OLD_TEMPS), 0)*1000);
-        Log.i("-> FCT <-", "Lvl: " + Lvl + " Score: " + score + " Chrono : " + tempsRestant);
+        //Log.i("-> FCT <-", "Lvl: " + Lvl + " Score: " + score + " Chrono : " + tempsRestant);
         repereOldGame = false;
 
     }
@@ -237,7 +240,7 @@ public class ColorMatchView extends SurfaceView implements SurfaceHolder.Callbac
                 }
                 carte[i][j] = myCol;
                 tabCol.set(myCol, ((int) tabCol.get(myCol)) - 1);
-                Log.i("-> FCT <-", "tabCol[" + i + "][" + j + "] :" + " rand: " + myCol + " Reste de tabCol[" + myCol + "]: " + tabCol.get(myCol));
+                //Log.i("-> FCT <-", "tabCol[" + i + "][" + j + "] :" + " rand: " + myCol + " Reste de tabCol[" + myCol + "]: " + tabCol.get(myCol));
 
             }
         }
@@ -248,7 +251,6 @@ public class ColorMatchView extends SurfaceView implements SurfaceHolder.Callbac
         sound = soundAct;
         repereOldGame = oldGame;
         nombreDeCouleur = nbCouleur;
-
     }
 
     // initialisation du jeu
@@ -306,7 +308,7 @@ public class ColorMatchView extends SurfaceView implements SurfaceHolder.Callbac
         mChrono = new Chrono(tempsRestant, 1000);
         if ((cv_thread != null) && (!cv_thread.isAlive())) {
             cv_thread.start();
-            Log.e("-FCT-", "cv_thread.start()");
+            //Log.e("-FCT-", "cv_thread.start()");
         }
         mChrono.start();
     }
@@ -448,17 +450,17 @@ public class ColorMatchView extends SurfaceView implements SurfaceHolder.Callbac
 
     // callback sur le cycle de vie de la surfaceview
     public void surfaceChanged(SurfaceHolder holder, int format, int width, int height) {
-        Log.i("-> FCT <-", "surfaceChanged " + width + " - " + height);
+        //Log.i("-> FCT <-", "surfaceChanged " + width + " - " + height);
 
     }
 
     public void surfaceCreated(SurfaceHolder arg0) {
-        Log.i("-> FCT <-", "surfaceCreated");
+        //Log.i("-> FCT <-", "surfaceCreated");
         startGame();
     }
 
     public void surfaceDestroyed(SurfaceHolder arg0) {
-        Log.i("-> FCT <-", "surfaceDestroyed");
+        //Log.i("-> FCT <-", "surfaceDestroyed");
 
     }
 
@@ -482,7 +484,7 @@ public class ColorMatchView extends SurfaceView implements SurfaceHolder.Callbac
                         }
                     }
                 } catch (Exception e) {
-                    Log.e("-> RUN <-", "PB DANS RUN" + e.getMessage());
+                    //Log.e("-> RUN <-", "PB DANS RUN" + e.getMessage());
                 }
             }
             else
