@@ -272,10 +272,39 @@ public class ColorMatchView extends SurfaceView implements SurfaceHolder.Callbac
         }
         else
         {
+            switch (nombreDeCouleur){
+                case 1:
+                    tempsRestant = 30000;
+                    break;
+                case 2:
+                    tempsRestant = 35000;
+                    break;
+                case 3:
+                    tempsRestant = 45000;
+                    break;
+                case 4:
+                    tempsRestant = 60000;
+                    break;
+                case 5:
+                    tempsRestant = 75000;
+                    break;
+                case 6:
+                    tempsRestant = 90000;
+                    break;
+                case 7:
+                    tempsRestant = 105000;
+                    break;
+                case 8:
+                    tempsRestant = 120000;
+                    break;
+            }
             loadRandCol(nombreDeCouleur);
         }
         carteTopAnchor = (getHeight() - carteHeight * carteTileSize) / 2;
         carteLeftAnchor = (getWidth() - carteWidth * carteTileSize) / 2;
+
+
+
         mChrono = new Chrono(tempsRestant, 1000);
         if ((cv_thread != null) && (!cv_thread.isAlive())) {
             cv_thread.start();
