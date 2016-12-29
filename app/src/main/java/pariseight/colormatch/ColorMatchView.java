@@ -67,8 +67,8 @@ public class ColorMatchView extends SurfaceView implements SurfaceHolder.Callbac
     // constante modelisant les differentes types de cases
     static final int CST_vide = 0;
     static final int CST_bleu = 1;
-    static final int CST_ciel = 2;
-    static final int CST_jaun = 3;
+    static final int CST_jaun = 2;
+    static final int CST_ciel = 3;
     static final int CST_marr = 4;
     static final int CST_oran = 5;
     static final int CST_rose = 6;
@@ -203,8 +203,10 @@ public class ColorMatchView extends SurfaceView implements SurfaceHolder.Callbac
     //Generation du nombre des couleurs
     private void loadRandCol(int leNbCouleur) {
         int nbCouleur = leNbCouleur, nbColMax = 120;
-        int nbColRandMax = (nbColMax / nbCouleur);
-        int nbColMin = (nbColRandMax / 2);
+        int nbMax = (nbColMax / nbCouleur);
+        int ecart = (nbMax / 3);
+        int nbColRandMax = nbMax + ecart;
+        int nbColMin = nbMax - ecart;
 
         Random rand = new Random();
 
@@ -385,8 +387,8 @@ public class ColorMatchView extends SurfaceView implements SurfaceHolder.Callbac
         {
             paintcarte(canvas);
             paintLvl(canvas);
-            //paintScore(canvas);
-            paintTemps(canvas);
+            paintScore(canvas);
+            //paintTemps(canvas);
         }
 
     }
@@ -416,12 +418,12 @@ public class ColorMatchView extends SurfaceView implements SurfaceHolder.Callbac
     // callback sur le cycle de vie de la surfaceview
     public void surfaceChanged(SurfaceHolder holder, int format, int width, int height) {
         Log.i("-> FCT <-", "surfaceChanged " + width + " - " + height);
-        startGame();
+
     }
 
     public void surfaceCreated(SurfaceHolder arg0) {
         Log.i("-> FCT <-", "surfaceCreated");
-
+        startGame();
     }
 
     public void surfaceDestroyed(SurfaceHolder arg0) {

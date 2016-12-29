@@ -27,22 +27,16 @@ public class ColorMatchActivity extends Activity {
         nbCouleur = getIntent().getExtras().getInt(String.valueOf(R.string.NB_COULEUR));
         oldGame = getIntent().getExtras().getBoolean(String.valueOf(R.string.ACTIVE_OLD_GAME));
 
-
         mColorMatchView = (ColorMatchView)findViewById(R.id.ColorMarchView);
         mColorMatchView.setVisibility(View.VISIBLE);
         mColorMatchView.init(sound, oldGame, nbCouleur);
+    }
 
-
-        ButtonTest = (Button)findViewById(R.id.buttonTest);
-
-        ButtonTest.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                mColorMatchView.saveCarte();
-                mColorMatchView.saveHighScore();
-            }
-        });
-
+    @Override
+    protected void onStop() {
+        mColorMatchView.cv_thread.interrupt();
+        mColorMatchView.saveCarte();
+        super.onStop();
     }
 }
 
