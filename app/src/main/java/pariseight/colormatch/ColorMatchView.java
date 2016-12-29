@@ -325,7 +325,7 @@ public class ColorMatchView extends SurfaceView implements SurfaceHolder.Callbac
 
     // dessin du gameOver si finTemps ou reste 1 couleur
     private void gameOver(Canvas canvas) {
-        canvas.drawBitmap(gameover, carteLeftAnchor * 7, carteTopAnchor * 4, null);
+        canvas.drawBitmap(gameover, carteLeftAnchor * 3, carteTopAnchor * 4, null);
         score = 0;
         nbCoup = 0;
     }
