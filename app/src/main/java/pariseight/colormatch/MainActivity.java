@@ -17,11 +17,14 @@ public class MainActivity extends AppCompatActivity {
     Button ButtonSound;
     Button ButtonAPropos;
     Button ButtonReprendre;
+    Button ButtonAddCol;
+    Button ButtonRemCol;
     TextView TextHighScore;
+    TextView TextNbColor;
 
     public boolean sound = true;
     public boolean BoolOldGame = false;
-    public int nbCouleur = 8;
+    public int nbCouleur = 4;
     private int HighScore = 0;
     private SharedPreferences mPref;
 
@@ -35,9 +38,15 @@ public class MainActivity extends AppCompatActivity {
         ButtonSound = (Button)findViewById(R.id.bSound);
         ButtonAPropos = (Button)findViewById(R.id.bAPropos);
         ButtonReprendre = (Button)findViewById(R.id.bReprendre) ;
+        ButtonAddCol = (Button)findViewById(R.id.buttonAdd);
+        ButtonRemCol = (Button)findViewById(R.id.buttonRem);
         TextHighScore = (TextView)findViewById(R.id.textView6);
+        TextNbColor = (TextView)findViewById(R.id.textViewColor);
         ButtonReprendre.setVisibility(View.INVISIBLE);
+
         mPref = getBaseContext().getSharedPreferences(String.valueOf(R.string.MY_PREF), MODE_PRIVATE);
+
+        TextNbColor.setText("Nombre Couleur: " + nbCouleur);
 
         if(mPref.contains(String.valueOf(R.string.HIGH_SCORE)))
         {
@@ -53,11 +62,34 @@ public class MainActivity extends AppCompatActivity {
 
         Log.i("-> FCT <-", "tmpScore: " + BoolOldGame + "HighScore: " + HighScore);
 
+        ButtonAddCol.setOnClickListener(new View.OnClickListener(){
+            @Override
+            public void onClick(View view){
+                if(nbCouleur<8)
+                {
+                    nbCouleur++;
+                    TextNbColor.setText("Nombre Couleur: " + nbCouleur);
+                }
+            }
+        });
+
+        ButtonRemCol.setOnClickListener(new View.OnClickListener(){
+            @Override
+            public void onClick(View view){
+                if(nbCouleur>1)
+                {
+                    nbCouleur--;
+                    TextNbColor.setText("Nombre Couleur: " + nbCouleur);
+                }
+            }
+        });
+
         ButtonPlay.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 Intent intent = new Intent(MainActivity.this, ColorMatchActivity.class);
                 intent.putExtra(String.valueOf(R.string.ACTIVE_SOUND), sound);
+                intent.putExtra(String.valueOf(R.string.NB_COULEUR), nbCouleur);
                 startActivity(intent);
 
             }

@@ -13,6 +13,7 @@ public class ColorMatchActivity extends Activity {
 
     public boolean sound = true;
     public boolean oldGame = false;
+    public int nbCouleur = 4;
     Button ButtonTest;
 
     private ColorMatchView mColorMatchView;
@@ -23,12 +24,13 @@ public class ColorMatchActivity extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.color_match);
         sound = getIntent().getExtras().getBoolean(String.valueOf(R.string.ACTIVE_SOUND));
+        nbCouleur = getIntent().getExtras().getInt(String.valueOf(R.string.NB_COULEUR));
         oldGame = getIntent().getExtras().getBoolean(String.valueOf(R.string.ACTIVE_OLD_GAME));
 
 
         mColorMatchView = (ColorMatchView)findViewById(R.id.ColorMarchView);
         mColorMatchView.setVisibility(View.VISIBLE);
-        mColorMatchView.init(sound, oldGame);
+        mColorMatchView.init(sound, oldGame, nbCouleur);
 
 
         ButtonTest = (Button)findViewById(R.id.buttonTest);

@@ -82,6 +82,7 @@ public class ColorMatchView extends SurfaceView implements SurfaceHolder.Callbac
     private int score = 0;
     public long tempsRestant = 30000;
     public boolean repereOldGame;          //Boolean pour reperer si on doit charger une carte sauvegarder ou une nouvelle
+    public int nombreDeCouleur;
 
     //Declaration du mediaPlayer pour gérer les son du jeux
     private MediaPlayer mMediaPlayer = new MediaPlayer();
@@ -200,22 +201,22 @@ public class ColorMatchView extends SurfaceView implements SurfaceHolder.Callbac
     }
 
     //Generation du nombre des couleurs
-    private void loadRandCol() {
-        int nbCouleur = 8, nbColMin = 10, nbColMax = 120;
+    private void loadRandCol(int leNbCouleur) {
+        int nbCouleur = leNbCouleur, nbColMin = 10, nbColMax = 120;
         Random rand = new Random();
 
-        tabCol.add(0, 136);//20);
+        tabCol.add(0, 20);
         //Log.i("-> FCT <-", "tabCol0: NbCol: " + tabCol.get(0));
-        for (int i = 1; i < 8; i++) {
-        //    int colRand = nbColMin + rand.nextInt(20 - nbColMin);
-        //    if ((colRand % 2) != 0) {
-        //        colRand += 1;
-        //    }
-            tabCol.add(i, 0);//colRand);
-        //    nbColMax -= colRand;
+        for (int i = 1; i < nbCouleur; i++) {
+            int colRand = nbColMin + rand.nextInt(20 - nbColMin);
+            if ((colRand % 2) != 0) {
+                colRand += 1;
+            }
+            tabCol.add(i, colRand);
+            nbColMax -= colRand;
             //Log.i("-> FCT <-", "tabCol[i]: " + i + " nbColMax: " + tabCol.get(i));
         }
-        tabCol.add(8, 4);//nbColMax);
+        tabCol.add(nbCouleur, nbColMax);
         //Log.i("-> FCT <-", "tabCol8: nbColMax: " + tabCol.get(8));
         loadCarte();
     }
@@ -239,14 +240,16 @@ public class ColorMatchView extends SurfaceView implements SurfaceHolder.Callbac
         }
     }
 
-    public void init(boolean soundAct, boolean oldGame)
+    public void init(boolean soundAct, boolean oldGame, int nbCouleur)
     {
         sound = soundAct;
         repereOldGame = oldGame;
+        nombreDeCouleur = nbCouleur;
+
     }
 
     // initialisation du jeu
-    public void startGame(boolean soundAct, boolean oldGame) {
+    public void startGame() {
 
         paint = new Paint();
         paint.setColor(0xff0000);
@@ -264,7 +267,7 @@ public class ColorMatchView extends SurfaceView implements SurfaceHolder.Callbac
         }
         else
         {
-            loadRandCol();
+            loadRandCol(nombreDeCouleur);
         }
         carteTopAnchor = (getHeight() - carteHeight * carteTileSize) / 2;
         carteLeftAnchor = (getWidth() - carteWidth * carteTileSize) / 2;
@@ -410,7 +413,7 @@ public class ColorMatchView extends SurfaceView implements SurfaceHolder.Callbac
     // callback sur le cycle de vie de la surfaceview
     public void surfaceChanged(SurfaceHolder holder, int format, int width, int height) {
         Log.i("-> FCT <-", "surfaceChanged " + width + " - " + height);
-        startGame(sound,repereOldGame);
+        startGame();
     }
 
     public void surfaceCreated(SurfaceHolder arg0) {
@@ -627,7 +630,7 @@ public class ColorMatchView extends SurfaceView implements SurfaceHolder.Callbac
         //Test si "Gagner" est afficher pour initaliser une nouvel carte
         if(newmap == true)
         {
-            startGame(sound,repereOldGame);
+            startGame();
             newmap = false;
         }
 

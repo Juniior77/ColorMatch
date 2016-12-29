@@ -16,10 +16,16 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:id="@+id/textView6"
-            android:textStyle="bold"
         android:layout_alignParentTop="true"
         android:layout_centerHorizontal="true"
-        android:layout_marginTop="56dp" />
+        android:layout_marginTop="56dp"
+        android:textAppearance="@style/TextAppearance.AppCompat.Medium.Inverse"
+        android:fontFamily="casual"
+        android:typeface="normal"
+        android:textSize="18sp"
+        android:textStyle="normal|bold"
+        android:textAlignment="center"
+        tools:ignore="HardcodedText" />
 
     <Button
         android:id="@+id/bPlay"
@@ -28,35 +34,150 @@
         android:layout_height="150dp"
         android:layout_below="@+id/textView6"
         android:layout_centerHorizontal="true"
-        android:layout_marginTop="81dp" />
+        android:layout_marginTop="81dp"
+        android:background="@android:drawable/ic_media_play"
+        android:elevation="10dp"
+        tools:ignore="UnusedAttribute" />
 
     <Button
-        android:text="@string/SOUND"
-        android:id="@+id/bSound"
-        style="@android:style/Widget.Holo.Light.Button.Inset"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignBottom="@+id/textView6"
-        android:layout_toStartOf="@+id/bPlay"
-        android:layout_marginEnd="14dp" />
-
-    <Button
-        android:text="@string/A_PROPOS"
-        android:id="@+id/bAPropos"
-        style="@android:style/Widget.Holo.Light.Button.Inset"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignBottom="@+id/textView6"
-        android:layout_toEndOf="@+id/bPlay" />
-
-    <Button
-        android:text="@string/REPRENDRE_JEUX"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:id="@+id/bReprendre"
         android:layout_marginTop="16dp"
         android:layout_below="@+id/bPlay"
-        android:layout_centerHorizontal="true" />
+        android:layout_centerHorizontal="true"
+        android:background="@android:drawable/ic_menu_revert" />
 
+    <Button
+        android:id="@+id/bSound"
+        style="@android:style/Widget.Holo.Light.Button.Inset"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="26dp"
+        android:background="@android:drawable/ic_lock_silent_mode"
+        android:layout_alignBottom="@+id/textView6"
+        android:layout_toStartOf="@+id/bPlay"
+        android:layout_width="wrap_content"
+        tools:ignore="RelativeOverlap" />
+
+    <Button
+        android:id="@+id/bAPropos"
+        style="@android:style/Widget.Holo.Light.Button.Inset"
+        android:background="@android:drawable/ic_menu_info_details"
+        android:elevation="0dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="25dp"
+        android:layout_alignBottom="@+id/textView6"
+        android:layout_toEndOf="@+id/bPlay"
+        tools:ignore="UnusedAttribute" />
+
+    <ImageView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:srcCompat="@drawable/orange"
+        android:id="@+id/imageView5"
+        android:layout_alignTop="@+id/imageView4"
+        android:layout_alignEnd="@+id/textView6"
+        tools:ignore="ContentDescription" />
+
+    <ImageView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:srcCompat="@drawable/jaune"
+        android:id="@+id/imageView3"
+        android:layout_alignTop="@+id/imageView2"
+        android:layout_toStartOf="@+id/imageView4"
+        tools:ignore="ContentDescription" />
+
+    <ImageView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:srcCompat="@drawable/ciel"
+        android:id="@+id/imageView2"
+        android:layout_alignTop="@+id/imageView"
+        android:layout_toStartOf="@+id/imageView3"
+        tools:ignore="ContentDescription" />
+
+    <ImageView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:srcCompat="@drawable/bleu"
+        android:id="@+id/imageView"
+        android:layout_alignParentBottom="true"
+        android:layout_toStartOf="@+id/imageView2"
+        android:layout_marginBottom="28dp"
+        tools:ignore="ContentDescription" />
+
+    <ImageView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:srcCompat="@drawable/rose"
+        android:id="@+id/imageView6"
+        android:adjustViewBounds="false"
+        android:cropToPadding="false"
+        android:layout_alignTop="@+id/imageView7"
+        android:layout_toEndOf="@+id/imageView7"
+        tools:ignore="ContentDescription" />
+
+    <ImageView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:srcCompat="@drawable/vertclaire"
+        android:id="@+id/imageView8"
+        android:layout_alignTop="@+id/imageView6"
+        android:layout_toEndOf="@+id/imageView6"
+        tools:ignore="ContentDescription" />
+
+    <ImageView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:srcCompat="@drawable/marron"
+        android:id="@+id/imageView4"
+        android:layout_alignTop="@+id/imageView3"
+        android:layout_alignStart="@+id/textView6"
+        tools:ignore="ContentDescription" />
+
+    <ImageView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:srcCompat="@drawable/turquoise"
+        android:id="@+id/imageView7"
+        android:layout_alignTop="@+id/imageView5"
+        android:layout_toEndOf="@+id/imageView5"
+        tools:ignore="ContentDescription" />
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/buttonRem"
+        android:background="@android:drawable/ic_menu_add"
+        android:layout_below="@+id/bReprendre"
+        android:layout_toStartOf="@+id/imageView2"
+        android:layout_marginTop="12dp" />
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/buttonAdd"
+        android:background="@android:drawable/ic_menu_add"
+        android:layout_alignBaseline="@+id/buttonRem"
+        android:layout_alignBottom="@+id/buttonRem"
+        android:layout_alignParentEnd="true" />
+
+    <TextView
+        android:text="TextView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/textViewColor"
+        android:textAppearance="@style/TextAppearance.AppCompat.Medium.Inverse"
+        android:fontFamily="casual"
+        android:typeface="normal"
+        android:textSize="18sp"
+        android:textStyle="normal|bold"
+        android:textAlignment="center"
+        tools:ignore="HardcodedText"
+        android:layout_alignBaseline="@+id/buttonRem"
+        android:layout_alignBottom="@+id/buttonRem"
+        android:layout_centerHorizontal="true" />
 
 </RelativeLayout>

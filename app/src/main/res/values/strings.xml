@@ -13,5 +13,6 @@
     <string name="REPRENDRE_JEUX">Reprendre</string>
     <string name="ACTIVE_SOUND">ACTIVE_SOUND</string>
     <string name="ACTIVE_OLD_GAME">ACTIVE_OLD_GAME</string>
+    <string name="NB_COULEUR">NB_COULEUR</string>
 
 </resources>
