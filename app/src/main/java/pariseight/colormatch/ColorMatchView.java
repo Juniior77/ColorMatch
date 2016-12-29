@@ -175,6 +175,7 @@ public class ColorMatchView extends SurfaceView implements SurfaceHolder.Callbac
         mEditor.putInt(String.valueOf(R.string.OLD_LVL), Lvl);
         mEditor.putInt(String.valueOf(R.string.OLD_SCORE), score);
         mEditor.putLong(String.valueOf(R.string.OLD_TEMPS), mChrono.temps);
+        mEditor.apply();
         Log.i("-> FCT <-", "Lvl: " + Lvl + " Score: " + score + " Chrono : " + mChrono.temps);
     }
 
@@ -183,6 +184,7 @@ public class ColorMatchView extends SurfaceView implements SurfaceHolder.Callbac
     {
         String oldCarte = mPref.getString(String.valueOf(R.string.OLD_CARTE), "");
         StringTokenizer myOldCarte = new StringTokenizer(oldCarte, ";");
+        Log.i("-> FCT <-", "StringCarte: " + oldCarte + " StringTokenizer: " + myOldCarte);
         for (int i = 0; i < carteHeight; i++) {
             for (int j = 0; j < carteWidth; j++) {
                 carte[i][j] = Integer.parseInt(myOldCarte.nextToken());
@@ -191,9 +193,9 @@ public class ColorMatchView extends SurfaceView implements SurfaceHolder.Callbac
         }
         Lvl = mPref.getInt(String.valueOf(R.string.OLD_LVL), 0);
         score = mPref.getInt(String.valueOf(R.string.OLD_SCORE), 0);
-        tempsRestant = mPref.getLong(String.valueOf(R.string.OLD_TEMPS),0);
-        Log.i("-> FCT <-", "Lvl: " + Lvl + " Score: " + score + " Chrono : " + mChrono.temps);
-        //repereOldGame = false;
+        tempsRestant = (mPref.getLong(String.valueOf(R.string.OLD_TEMPS), 0)*1000);
+        Log.i("-> FCT <-", "Lvl: " + Lvl + " Score: " + score + " Chrono : " + tempsRestant);
+        repereOldGame = false;
 
     }
 

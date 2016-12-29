@@ -1,62 +1,62 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<TableLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/main"
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
-
     tools:context="pariseight.colormatch.MainActivity"
     android:orientation="vertical"
-    android:weightSum="1"
     android:background="@drawable/background">
 
-    <TableRow
-        android:layout_centerHorizontal="true"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent">
 
-        <Button
-            android:layout_marginTop="8dp"
-            android:id="@+id/bPlay"
-            style="@android:style/Widget.Holo.Light.Button"
-            android:layout_width="150dp"
-            android:layout_height="150dp" />
-
-    </TableRow>
-
-    <TableRow>
-    <Button
-        android:layout_marginTop="8dp"
-        android:text="@string/SOUND"
-        android:id="@+id/bSound"
-        style="@android:style/Widget.Holo.Light.Button.Inset" />
-
-    <Button
-        android:layout_marginTop="8dp"
-        android:text="@string/A_PROPOS"
-        android:id="@+id/bAPropos"
-        style="@android:style/Widget.Holo.Light.Button.Inset" />
-
-    </TableRow>
-
-    <TableRow>
-
-        <TextView
+    <TextView
             android:text="TextView"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:id="@+id/textView6"
-            android:textStyle="bold" />
+            android:textStyle="bold"
+        android:layout_alignParentTop="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="56dp" />
 
-        <Button
-            android:text="@string/REPRENDRE_JEUX"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:id="@+id/bReprendre" />
+    <Button
+        android:id="@+id/bPlay"
+        style="@android:style/Widget.Holo.Light.Button"
+        android:layout_width="150dp"
+        android:layout_height="150dp"
+        android:layout_below="@+id/textView6"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="81dp" />
 
-    </TableRow>
+    <Button
+        android:text="@string/SOUND"
+        android:id="@+id/bSound"
+        style="@android:style/Widget.Holo.Light.Button.Inset"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBottom="@+id/textView6"
+        android:layout_toStartOf="@+id/bPlay"
+        android:layout_marginEnd="14dp" />
+
+    <Button
+        android:text="@string/A_PROPOS"
+        android:id="@+id/bAPropos"
+        style="@android:style/Widget.Holo.Light.Button.Inset"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBottom="@+id/textView6"
+        android:layout_toEndOf="@+id/bPlay" />
+
+    <Button
+        android:text="@string/REPRENDRE_JEUX"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/bReprendre"
+        android:layout_marginTop="16dp"
+        android:layout_below="@+id/bPlay"
+        android:layout_centerHorizontal="true" />
 
 
-</TableLayout>
+</RelativeLayout>

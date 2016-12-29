@@ -16,8 +16,8 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".ColorMatchActivity" android:label="ColorMatch" />
-        <activity android:name=".popAPropos"/>
+        <activity android:name=".ColorMatchActivity" android:label="ColorMatch" android:screenOrientation="portrait"/>
+        <activity android:name=".popAPropos" android:screenOrientation="portrait"/>
     </application>
 </manifest>
 

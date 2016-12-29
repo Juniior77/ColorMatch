@@ -21,6 +21,7 @@ public class MainActivity extends AppCompatActivity {
 
     public boolean sound = true;
     public boolean BoolOldGame = false;
+    public int nbCouleur = 8;
     private int HighScore = 0;
     private SharedPreferences mPref;
 
@@ -35,7 +36,7 @@ public class MainActivity extends AppCompatActivity {
         ButtonAPropos = (Button)findViewById(R.id.bAPropos);
         ButtonReprendre = (Button)findViewById(R.id.bReprendre) ;
         TextHighScore = (TextView)findViewById(R.id.textView6);
-
+        ButtonReprendre.setVisibility(View.INVISIBLE);
         mPref = getBaseContext().getSharedPreferences(String.valueOf(R.string.MY_PREF), MODE_PRIVATE);
 
         if(mPref.contains(String.valueOf(R.string.HIGH_SCORE)))
