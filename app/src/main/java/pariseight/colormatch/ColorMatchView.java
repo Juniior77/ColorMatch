@@ -16,8 +16,6 @@ import android.util.Log;
 import android.view.MotionEvent;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
-import android.view.View;
-import android.widget.Button;
 
 
 import java.util.ArrayList;
@@ -337,7 +335,7 @@ public class ColorMatchView extends SurfaceView implements SurfaceHolder.Callbac
         canvas.drawPaint(paint);
         paint.setColor(Color.WHITE);
         paint.setTextSize(70);
-        canvas.drawText("Level: " + Lvl, 675, 75, paint);
+        canvas.drawText("Level: " + Lvl, 775, 75, paint);
     }
 
     private void paintScore(Canvas canvas) {
@@ -356,8 +354,12 @@ public class ColorMatchView extends SurfaceView implements SurfaceHolder.Callbac
         paint.setStyle(Paint.Style.FILL);
         canvas.drawPaint(paint);
         paint.setColor(Color.WHITE);
+        if(mChrono.temps<=15)
+        {
+            paint.setColor(Color.RED);
+        }
         paint.setTextSize(70);
-        canvas.drawText("Score: " + mChrono.temps, 75, 75, paint);
+        canvas.drawText("Temps: " + mChrono.temps, 75, 155, paint);
     }
 
     // dessin de la carte du jeu
@@ -417,7 +419,7 @@ public class ColorMatchView extends SurfaceView implements SurfaceHolder.Callbac
             paintcarte(canvas);
             paintLvl(canvas);
             paintScore(canvas);
-            //paintTemps(canvas);
+            paintTemps(canvas);
         }
 
     }
