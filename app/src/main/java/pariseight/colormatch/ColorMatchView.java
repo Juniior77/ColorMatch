@@ -202,13 +202,16 @@ public class ColorMatchView extends SurfaceView implements SurfaceHolder.Callbac
 
     //Generation du nombre des couleurs
     private void loadRandCol(int leNbCouleur) {
-        int nbCouleur = leNbCouleur, nbColMin = 10, nbColMax = 120;
+        int nbCouleur = leNbCouleur, nbColMax = 120;
+        int nbColRandMax = (nbColMax / nbCouleur);
+        int nbColMin = (nbColRandMax / 2);
+
         Random rand = new Random();
 
         tabCol.add(0, 20);
         //Log.i("-> FCT <-", "tabCol0: NbCol: " + tabCol.get(0));
         for (int i = 1; i < nbCouleur; i++) {
-            int colRand = nbColMin + rand.nextInt(20 - nbColMin);
+            int colRand = nbColMin + rand.nextInt(nbColRandMax - nbColMin);
             if ((colRand % 2) != 0) {
                 colRand += 1;
             }
