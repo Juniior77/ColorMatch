@@ -1,7 +1,7 @@
 package pariseight.colormatch;
 
 import android.content.Context;
-import android.content.Intent;
+
 import android.content.SharedPreferences;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
@@ -9,13 +9,17 @@ import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
+import android.graphics.drawable.BitmapDrawable;
 import android.media.MediaPlayer;
+
 import android.os.CountDownTimer;
 import android.util.AttributeSet;
 import android.util.Log;
+
 import android.view.MotionEvent;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
+
 
 
 import java.util.ArrayList;
@@ -30,14 +34,23 @@ public class ColorMatchView extends SurfaceView implements SurfaceHolder.Callbac
 
     // Declaration des images
     private Bitmap bleu;
+    private Bitmap mBleu;
     private Bitmap ciel;
+    private Bitmap mCiel;
     private Bitmap jaun;
+    private Bitmap mJaun;
     private Bitmap marr;
+    private Bitmap mMarr;
     private Bitmap oran;
+    private Bitmap mOran;
     private Bitmap rose;
+    private Bitmap mRose;
     private Bitmap turq;
+    private Bitmap mTurq;
     private Bitmap vert;
+    private Bitmap mVert;
     private Bitmap vide;
+    private Bitmap mVide;
     private Bitmap win;
     private Bitmap gameover;
 
@@ -59,7 +72,7 @@ public class ColorMatchView extends SurfaceView implements SurfaceHolder.Callbac
     // taille de la carte
     static final int carteWidth = 10;
     static final int carteHeight = 14;
-    public int carteTileSize = 96;
+    public int carteTileSize;
     public ArrayList tabCol = new ArrayList();
 
     // constante modelisant les differentes types de cases
@@ -112,24 +125,6 @@ public class ColorMatchView extends SurfaceView implements SurfaceHolder.Callbac
         // chargement des images
         mContext = context;
         mRes = mContext.getResources();
-        /*bleu = BitmapFactory.decodeResource(mRes, R.mipmap.bleu);
-        ciel = BitmapFactory.decodeResource(mRes, R.mipmap.ciel);
-        jaun = BitmapFactory.decodeResource(mRes, R.mipmap.jaune);
-        marr = BitmapFactory.decodeResource(mRes, R.mipmap.marron);
-        oran = BitmapFactory.decodeResource(mRes, R.mipmap.orange);
-        rose = BitmapFactory.decodeResource(mRes, R.mipmap.rose);
-        turq = BitmapFactory.decodeResource(mRes, R.mipmap.turquoise);
-        vert = BitmapFactory.decodeResource(mRes, R.mipmap.vertclaire);
-        vide = BitmapFactory.decodeResource(mRes, R.mipmap.vide);*/
-        bleu = BitmapFactory.decodeResource(mRes, R.drawable.bleu);
-        ciel = BitmapFactory.decodeResource(mRes, R.drawable.ciel);
-        jaun = BitmapFactory.decodeResource(mRes, R.drawable.jaune);
-        marr = BitmapFactory.decodeResource(mRes, R.drawable.marron);
-        oran = BitmapFactory.decodeResource(mRes, R.drawable.orange);
-        rose = BitmapFactory.decodeResource(mRes, R.drawable.rose);
-        turq = BitmapFactory.decodeResource(mRes, R.drawable.turquoise);
-        vert = BitmapFactory.decodeResource(mRes, R.drawable.vertclaire);
-        vide = BitmapFactory.decodeResource(mRes, R.drawable.vide);
         win = BitmapFactory.decodeResource(mRes, R.drawable.win);
         gameover = BitmapFactory.decodeResource(mRes, R.drawable.gameover);
 
@@ -156,7 +151,7 @@ public class ColorMatchView extends SurfaceView implements SurfaceHolder.Callbac
             mEditor.putInt(String.valueOf(R.string.HIGH_SCORE), score);
             mEditor.apply();
         }
-        Log.i("-> FCT <-", "tmpScore: " + tmpScore);
+        //Log.i("-> FCT <-", "tmpScore: " + tmpScore);
     }
 
     //Persistence de la carte
@@ -170,12 +165,12 @@ public class ColorMatchView extends SurfaceView implements SurfaceHolder.Callbac
             }
         }
         mEditor.putString(String.valueOf(R.string.OLD_CARTE), carteStr.toString());
-        Log.i("-> FCT <-", "carteStr: " + carteStr.toString());
+        //Log.i("-> FCT <-", "carteStr: " + carteStr.toString());
         mEditor.putInt(String.valueOf(R.string.OLD_LVL), Lvl);
         mEditor.putInt(String.valueOf(R.string.OLD_SCORE), score);
         mEditor.putLong(String.valueOf(R.string.OLD_TEMPS), mChrono.temps);
         mEditor.apply();
-        Log.i("-> FCT <-", "Lvl: " + Lvl + " Score: " + score + " Chrono : " + mChrono.temps);
+        //Log.i("-> FCT <-", "Lvl: " + Lvl + " Score: " + score + " Chrono : " + mChrono.temps);
     }
 
     //Chargement de la carte sauvegarder
@@ -183,17 +178,17 @@ public class ColorMatchView extends SurfaceView implements SurfaceHolder.Callbac
     {
         String oldCarte = mPref.getString(String.valueOf(R.string.OLD_CARTE), "");
         StringTokenizer myOldCarte = new StringTokenizer(oldCarte, ";");
-        Log.i("-> FCT <-", "StringCarte: " + oldCarte + " StringTokenizer: " + myOldCarte);
+        //Log.i("-> FCT <-", "StringCarte: " + oldCarte + " StringTokenizer: " + myOldCarte);
         for (int i = 0; i < carteHeight; i++) {
             for (int j = 0; j < carteWidth; j++) {
                 carte[i][j] = Integer.parseInt(myOldCarte.nextToken());
-                Log.i("-> FCT <-", "carte["+i+"]["+j+"]: " + carte[i][j]);
+                //Log.i("-> FCT <-", "carte["+i+"]["+j+"]: " + carte[i][j]);
             }
         }
         Lvl = mPref.getInt(String.valueOf(R.string.OLD_LVL), 0);
         score = mPref.getInt(String.valueOf(R.string.OLD_SCORE), 0);
         tempsRestant = (mPref.getLong(String.valueOf(R.string.OLD_TEMPS), 0)*1000);
-        Log.i("-> FCT <-", "Lvl: " + Lvl + " Score: " + score + " Chrono : " + tempsRestant);
+        //Log.i("-> FCT <-", "Lvl: " + Lvl + " Score: " + score + " Chrono : " + tempsRestant);
         repereOldGame = false;
 
     }
@@ -237,7 +232,7 @@ public class ColorMatchView extends SurfaceView implements SurfaceHolder.Callbac
                 }
                 carte[i][j] = myCol;
                 tabCol.set(myCol, ((int) tabCol.get(myCol)) - 1);
-                Log.i("-> FCT <-", "tabCol[" + i + "][" + j + "] :" + " rand: " + myCol + " Reste de tabCol[" + myCol + "]: " + tabCol.get(myCol));
+                //Log.i("-> FCT <-", "tabCol[" + i + "][" + j + "] :" + " rand: " + myCol + " Reste de tabCol[" + myCol + "]: " + tabCol.get(myCol));
 
             }
         }
@@ -248,7 +243,6 @@ public class ColorMatchView extends SurfaceView implements SurfaceHolder.Callbac
         sound = soundAct;
         repereOldGame = oldGame;
         nombreDeCouleur = nbCouleur;
-
     }
 
     // initialisation du jeu
@@ -301,19 +295,17 @@ public class ColorMatchView extends SurfaceView implements SurfaceHolder.Callbac
         carteTopAnchor = (getHeight() - carteHeight * carteTileSize) / 2;
         carteLeftAnchor = (getWidth() - carteWidth * carteTileSize) / 2;
 
-
-
         mChrono = new Chrono(tempsRestant, 1000);
         if ((cv_thread != null) && (!cv_thread.isAlive())) {
             cv_thread.start();
-            Log.e("-FCT-", "cv_thread.start()");
+            //Log.e("-FCT-", "cv_thread.start()");
         }
         mChrono.start();
     }
 
     // dessin du gagne si gagne
     private void win(Canvas canvas) {
-        canvas.drawBitmap(win, carteLeftAnchor * 7, carteTopAnchor * 4, null);
+        canvas.drawBitmap(win, (getWidth()/2) - (win.getWidth()/2), (getHeight()/2) - (win.getHeight()/2), null);
         Lvl += 1;
         nbCoup = 0;
         mChrono.onFinish();
@@ -323,7 +315,7 @@ public class ColorMatchView extends SurfaceView implements SurfaceHolder.Callbac
 
     // dessin du gameOver si finTemps ou reste 1 couleur
     private void gameOver(Canvas canvas) {
-        canvas.drawBitmap(gameover, carteLeftAnchor * 7, carteTopAnchor * 4, null);
+        canvas.drawBitmap(gameover, (getWidth()/2) - (gameover.getWidth()/2), (getHeight()/2) - (gameover.getHeight()/2), null);
         score = 0;
         nbCoup = 0;
     }
@@ -334,7 +326,7 @@ public class ColorMatchView extends SurfaceView implements SurfaceHolder.Callbac
         paint.setStyle(Paint.Style.FILL);
         canvas.drawPaint(paint);
         paint.setColor(Color.WHITE);
-        paint.setTextSize(70);
+        paint.setTextSize(18);
         canvas.drawText("Level: " + Lvl, 775, 75, paint);
     }
 
@@ -344,8 +336,8 @@ public class ColorMatchView extends SurfaceView implements SurfaceHolder.Callbac
         paint.setStyle(Paint.Style.FILL);
         canvas.drawPaint(paint);
         paint.setColor(Color.WHITE);
-        paint.setTextSize(70);
-        canvas.drawText("Score: " + score, 75, 75, paint);
+        paint.setTextSize(carteTileSize/2);
+        canvas.drawText("Score: " + score,getWidth()/10 , carteTileSize, paint);
     }
 
     private void paintTemps(Canvas canvas) {
@@ -358,8 +350,8 @@ public class ColorMatchView extends SurfaceView implements SurfaceHolder.Callbac
         {
             paint.setColor(Color.RED);
         }
-        paint.setTextSize(70);
-        canvas.drawText("Temps: " + mChrono.temps, 75, 155, paint);
+        paint.setTextSize(carteTileSize/2);
+        canvas.drawText("Temps: " + mChrono.temps, getWidth()/2, carteTileSize, paint);
     }
 
     // dessin de la carte du jeu
@@ -368,31 +360,31 @@ public class ColorMatchView extends SurfaceView implements SurfaceHolder.Callbac
             for (int j = 0; j < carteWidth; j++) {
                 switch (carte[i][j]) {
                     case CST_vide:
-                        canvas.drawBitmap(vide, carteLeftAnchor + j * carteTileSize, carteTopAnchor + i * carteTileSize, null);
+                        canvas.drawBitmap(mVide, carteLeftAnchor + j * carteTileSize, carteTopAnchor + i * carteTileSize, null);
                         break;
                     case CST_bleu:
-                        canvas.drawBitmap(bleu, carteLeftAnchor + j * carteTileSize, carteTopAnchor + i * carteTileSize, null);
+                        canvas.drawBitmap(mBleu, carteLeftAnchor + j * carteTileSize, carteTopAnchor + i * carteTileSize, null);
                         break;
                     case CST_ciel:
-                        canvas.drawBitmap(ciel, carteLeftAnchor + j * carteTileSize, carteTopAnchor + i * carteTileSize, null);
+                        canvas.drawBitmap(mCiel, carteLeftAnchor + j * carteTileSize, carteTopAnchor + i * carteTileSize, null);
                         break;
                     case CST_jaun:
-                        canvas.drawBitmap(jaun, carteLeftAnchor + j * carteTileSize, carteTopAnchor + i * carteTileSize, null);
+                        canvas.drawBitmap(mJaun, carteLeftAnchor + j * carteTileSize, carteTopAnchor + i * carteTileSize, null);
                         break;
                     case CST_marr:
-                        canvas.drawBitmap(marr, carteLeftAnchor + j * carteTileSize, carteTopAnchor + i * carteTileSize, null);
+                        canvas.drawBitmap(mMarr, carteLeftAnchor + j * carteTileSize, carteTopAnchor + i * carteTileSize, null);
                         break;
                     case CST_oran:
-                        canvas.drawBitmap(oran, carteLeftAnchor + j * carteTileSize, carteTopAnchor + i * carteTileSize, null);
+                        canvas.drawBitmap(mOran, carteLeftAnchor + j * carteTileSize, carteTopAnchor + i * carteTileSize, null);
                         break;
                     case CST_rose:
-                        canvas.drawBitmap(rose, carteLeftAnchor + j * carteTileSize, carteTopAnchor + i * carteTileSize, null);
+                        canvas.drawBitmap(mRose, carteLeftAnchor + j * carteTileSize, carteTopAnchor + i * carteTileSize, null);
                         break;
                     case CST_turq:
-                        canvas.drawBitmap(turq, carteLeftAnchor + j * carteTileSize, carteTopAnchor + i * carteTileSize, null);
+                        canvas.drawBitmap(mTurq, carteLeftAnchor + j * carteTileSize, carteTopAnchor + i * carteTileSize, null);
                         break;
                     case CST_vert:
-                        canvas.drawBitmap(vert, carteLeftAnchor + j * carteTileSize, carteTopAnchor + i * carteTileSize, null);
+                        canvas.drawBitmap(mVert, carteLeftAnchor + j * carteTileSize, carteTopAnchor + i * carteTileSize, null);
                         break;
                 }
             }
@@ -417,7 +409,7 @@ public class ColorMatchView extends SurfaceView implements SurfaceHolder.Callbac
         else
         {
             paintcarte(canvas);
-            paintLvl(canvas);
+            //paintLvl(canvas);
             paintScore(canvas);
             paintTemps(canvas);
         }
@@ -448,17 +440,38 @@ public class ColorMatchView extends SurfaceView implements SurfaceHolder.Callbac
 
     // callback sur le cycle de vie de la surfaceview
     public void surfaceChanged(SurfaceHolder holder, int format, int width, int height) {
-        Log.i("-> FCT <-", "surfaceChanged " + width + " - " + height);
+        //Log.i("-> FCT <-", "surfaceChanged " + width + " - " + height);
 
     }
 
     public void surfaceCreated(SurfaceHolder arg0) {
-        Log.i("-> FCT <-", "surfaceCreated");
+        //Log.i("-> FCT <-", "surfaceCreated");
+
+        carteTileSize = (getWidth() - 60) / carteWidth;
+        bleu = BitmapFactory.decodeResource(mRes, R.mipmap.bleu);
+        mBleu = Bitmap.createScaledBitmap(bleu, carteTileSize - 1, carteTileSize - 1, true);
+        ciel = BitmapFactory.decodeResource(mRes, R.mipmap.ciel);
+        mCiel = Bitmap.createScaledBitmap(ciel, carteTileSize - 1, carteTileSize - 1, true);
+        jaun = BitmapFactory.decodeResource(mRes, R.mipmap.jaune);
+        mJaun = Bitmap.createScaledBitmap(jaun, carteTileSize - 1, carteTileSize - 1, true);
+        marr = BitmapFactory.decodeResource(mRes, R.mipmap.marron);
+        mMarr = Bitmap.createScaledBitmap(marr, carteTileSize - 1, carteTileSize - 1, true);
+        oran = BitmapFactory.decodeResource(mRes, R.mipmap.orange);
+        mOran = Bitmap.createScaledBitmap(oran, carteTileSize - 1, carteTileSize - 1, true);
+        rose = BitmapFactory.decodeResource(mRes, R.mipmap.rose);
+        mRose = Bitmap.createScaledBitmap(rose, carteTileSize - 1, carteTileSize - 1, true);
+        turq = BitmapFactory.decodeResource(mRes, R.mipmap.turquoise);
+        mTurq = Bitmap.createScaledBitmap(turq, carteTileSize - 1, carteTileSize - 1, true);
+        vert = BitmapFactory.decodeResource(mRes, R.mipmap.vertclaire);
+        mVert = Bitmap.createScaledBitmap(vert, carteTileSize - 1, carteTileSize - 1, true);
+        vide = BitmapFactory.decodeResource(mRes, R.mipmap.vide);
+        mVide = Bitmap.createScaledBitmap(vide, carteTileSize - 1, carteTileSize - 1, true);
+
         startGame();
     }
 
     public void surfaceDestroyed(SurfaceHolder arg0) {
-        Log.i("-> FCT <-", "surfaceDestroyed");
+        //Log.i("-> FCT <-", "surfaceDestroyed");
 
     }
 
@@ -482,7 +495,7 @@ public class ColorMatchView extends SurfaceView implements SurfaceHolder.Callbac
                         }
                     }
                 } catch (Exception e) {
-                    Log.e("-> RUN <-", "PB DANS RUN" + e.getMessage());
+                    //Log.e("-> RUN <-", "PB DANS RUN" + e.getMessage());
                 }
             }
             else
@@ -586,13 +599,15 @@ public class ColorMatchView extends SurfaceView implements SurfaceHolder.Callbac
                         carte[y][posCouleurGauche] = 0;
                         score += 40;
                     }
-                    else{
-                        //BOYCOT DU TEMPS !!!!
+                    else if(score == scoreTmp)
+                    {
+                        //Enlève du temps;
                     }
                 }
             }
         }
     }
+
 
     //Stock la couleur de gauche
     private int getGauche (int x, int y)
@@ -700,6 +715,7 @@ public class ColorMatchView extends SurfaceView implements SurfaceHolder.Callbac
         }
     }
 }
+
 class Chrono extends CountDownTimer
 {
     long temps;
@@ -709,15 +725,13 @@ class Chrono extends CountDownTimer
       super(startTime, interval);
         finTemps = false;
     }
-
-    @Override
-    public void onFinish()
-    {
-        finTemps = true;
-    }
     @Override
     public void onTick(long millisUntilFinished)
     {
         temps = millisUntilFinished / 1000;
+    }
+    @Override
+    public void onFinish() {
+        finTemps = true;
     }
 }

@@ -1,8 +1,10 @@
 package pariseight.colormatch;
 
 import android.app.Activity;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.os.Bundle;
+import android.view.ViewGroup;
 import android.widget.Button;
 
 /**
@@ -14,15 +16,14 @@ public class ColorMatchActivity extends Activity {
     public boolean sound = true;
     public boolean oldGame = false;
     public int nbCouleur = 4;
-    Button ButtonTest;
 
     private ColorMatchView mColorMatchView;
 
-    @Override
     public void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.color_match);
+
         sound = getIntent().getExtras().getBoolean(String.valueOf(R.string.ACTIVE_SOUND));
         nbCouleur = getIntent().getExtras().getInt(String.valueOf(R.string.NB_COULEUR));
         oldGame = getIntent().getExtras().getBoolean(String.valueOf(R.string.ACTIVE_OLD_GAME));
@@ -39,4 +40,3 @@ public class ColorMatchActivity extends Activity {
         super.onStop();
     }
 }
-
