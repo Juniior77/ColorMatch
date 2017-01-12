@@ -54,6 +54,7 @@ public class ColorMatchView extends SurfaceView implements SurfaceHolder.Callbac
     private Bitmap mVide;
     private Bitmap win;
     private Bitmap gameover;
+    private Bitmap gameovergrille;
 
     // Declaration des objets Ressources et Context permettant d'acceder aux ressources de notre application et de les charger
     private Resources mRes;
@@ -92,11 +93,10 @@ public class ColorMatchView extends SurfaceView implements SurfaceHolder.Callbac
     private int nbCoup = 0;
     public boolean newmap = false;         //Boolean pour passer au level suivant ou charger une nouvelle map
     private int score = 0;
-    public long tempsRestant = 30000;
+    public long tempsRestant;
     public boolean repereOldGame;          //Boolean pour reperer si on doit charger une carte sauvegarder ou une nouvelle
     public int nombreDeCouleur;
     private boolean etatChrono = true;
-    //public ArrayList repereCouleur = new ArrayList();
     public int[] repereCouleur;
 
     //Declaration du mediaPlayer pour gérer les son du jeux
@@ -129,8 +129,9 @@ public class ColorMatchView extends SurfaceView implements SurfaceHolder.Callbac
         // chargement des images
         mContext = context;
         mRes = mContext.getResources();
-        win = BitmapFactory.decodeResource(mRes, R.drawable.win);
+        win = BitmapFactory.decodeResource(mRes, R.drawable.gagner);
         gameover = BitmapFactory.decodeResource(mRes, R.drawable.gameover);
+        gameovergrille = BitmapFactory.decodeResource(mRes, R.drawable.gameovergrille);
 
         // creation du thread
         cv_thread = new Thread(this);
@@ -234,14 +235,16 @@ public class ColorMatchView extends SurfaceView implements SurfaceHolder.Callbac
     }
 
     //Check si la partie est perdu
-    private void checkIsOver(){
+    private boolean checkIsOver(){
         for(int i = 1; i < nombreDeCouleur; i++){
             if(repereCouleur[i] == 1)
             {
                 //Partie perdu
                 mChrono.onFinish();
+                return true;
             }
         }
+        return false;
     }
 
     //Chargement de la carte
@@ -349,7 +352,7 @@ public class ColorMatchView extends SurfaceView implements SurfaceHolder.Callbac
 
     // dessin du gameOver si finTemps ou reste 1 couleur        Changer le bitmap en GameOver Plus de solution possible
     private void gameOver(Canvas canvas) {
-        canvas.drawBitmap(gameover, (getWidth()/2) - (gameover.getWidth()/2), (getHeight()/2) - (gameover.getHeight()/2), null);
+        canvas.drawBitmap(gameovergrille, (getWidth()/2) - (gameovergrille.getWidth()/2), (getHeight()/2) - (gameovergrille.getHeight()/2), null);
         score = 0;
         nbCoup = 0;
     }
@@ -446,7 +449,13 @@ public class ColorMatchView extends SurfaceView implements SurfaceHolder.Callbac
             if(mChrono.finTemps==true)
             {
                 newmap = true;
-                gameOverTimer(canvas);
+                if(checkIsOver())
+                {
+                    gameOver(canvas);
+                }
+                else {
+                    gameOverTimer(canvas);
+                }
             }
             else
             {
@@ -738,6 +747,10 @@ public class ColorMatchView extends SurfaceView implements SurfaceHolder.Callbac
                     else if(score == scoreTmp)
                     {
                         //Enlève du temps;
+                        long currentTime = mChrono.temps - 3;
+                        mChrono.cancel();
+                        mChrono.temps = currentTime;
+                        mChrono.start();
                     }
                 }
             }
@@ -868,10 +881,14 @@ class Chrono extends CountDownTimer
     public void onTick(long millisUntilFinished)
     {
         temps = millisUntilFinished / 1000;
+        if(temps == 1)
+        {
+            finTemps = true;
+        }
         tempsEcoule ++;
     }
     @Override
     public void onFinish() {
-        finTemps = true;
+
     }
 }
