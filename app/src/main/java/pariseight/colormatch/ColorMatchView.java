@@ -98,6 +98,8 @@ public class ColorMatchView extends SurfaceView implements SurfaceHolder.Callbac
     public int nombreDeCouleur;
     private boolean etatChrono = true;
     public int[] repereCouleur;
+    public boolean lockCheck;
+    public boolean stateOver;
 
     //Declaration du mediaPlayer pour gérer les son du jeux
     private MediaPlayer mMediaPlayer = new MediaPlayer();
@@ -217,34 +219,41 @@ public class ColorMatchView extends SurfaceView implements SurfaceHolder.Callbac
 
         tabCol.add(0, 20);
         //Log.i("-> FCT <-", "tabCol0: NbCol: " + tabCol.get(0));
-        for (int i = 1; i < nbCouleur; i++) {
-            int colRand = nbColMin + rand.nextInt(nbColRandMax - nbColMin);
-            if ((colRand % 2) != 0) {
-                colRand += 1;
+        if(nbCouleur > 1) {
+            for (int i = 1; i < nbCouleur; i++) {
+                int colRand = nbColMin + rand.nextInt(nbColRandMax - nbColMin);
+                if ((colRand % 2) != 0) {
+                    colRand += 1;
+                }
+                tabCol.add(i, colRand);
+                repereCouleur[i] = colRand;
+                nbColMax -= colRand;
+                //Log.i("-> FCT <-", "tabCol[i]: " + i + " nbColMax: " + tabCol.get(i));
             }
-            tabCol.add(i, colRand);
-            repereCouleur[i]=colRand;
-            nbColMax -= colRand;
-            //Log.i("-> FCT <-", "tabCol[i]: " + i + " nbColMax: " + tabCol.get(i));
+            tabCol.add(nbCouleur, nbColMax);
+            //Log.i("-> FCT <-", "tabCol8: nbColMax: " + tabCol.get(leNbCouleur));
         }
-        tabCol.add(nbCouleur, nbColMax);
-        //Log.i("-> FCT <-", "tabCol8: nbColMax: " + tabCol.get(leNbCouleur));
-
+        else
+        {
+            tabCol.add(1, nbColMax);
+            repereCouleur[1] = nbColMax;
+        }
 
         loadCarte();
     }
 
     //Check si la partie est perdu
     private boolean checkIsOver(){
-        for(int i = 1; i < nombreDeCouleur; i++){
+        for(int i = 1; i <= nombreDeCouleur; i++){
             if(repereCouleur[i] == 1)
             {
                 //Partie perdu
-                mChrono.onFinish();
-                return true;
+                stateOver = true;
+                break;
             }
+            stateOver = false;
         }
-        return false;
+        return stateOver;
     }
 
     //Chargement de la carte
@@ -334,8 +343,8 @@ public class ColorMatchView extends SurfaceView implements SurfaceHolder.Callbac
         }
         if(etatChrono == true)
         {
-            mChrono = new Chrono(tempsRestant, 1000);
-            mChrono.start();
+            mChrono = new Chrono();
+            mChrono.createNewTimer(tempsRestant);
         }
 
     }
@@ -345,7 +354,6 @@ public class ColorMatchView extends SurfaceView implements SurfaceHolder.Callbac
         canvas.drawBitmap(win, (getWidth()/2) - (win.getWidth()/2), (getHeight()/2) - (win.getHeight()/2), null);
         Lvl += 1;
         nbCoup = 0;
-        mChrono.onFinish();
         saveHighScore();
         score = 0;
     }
@@ -440,22 +448,28 @@ public class ColorMatchView extends SurfaceView implements SurfaceHolder.Callbac
         canvas.drawRGB(44, 44, 44);
         if (checkIsWon())
         {
+            if(mChrono != null)
+            {
+                mChrono.killTimer();
+            }
             newmap = true;
-            paintcarte(canvas);
             win(canvas);
+        }
+        else if(checkIsOver())
+        {
+            if(mChrono != null)
+            {
+                mChrono.killTimer();
+            }
+            newmap = true;
+            gameOver(canvas);
         }
         else if(etatChrono == true)
         {
             if(mChrono.finTemps==true)
             {
                 newmap = true;
-                if(checkIsOver())
-                {
-                    gameOver(canvas);
-                }
-                else {
-                    gameOverTimer(canvas);
-                }
+                gameOverTimer(canvas);
             }
             else
             {
@@ -470,7 +484,6 @@ public class ColorMatchView extends SurfaceView implements SurfaceHolder.Callbac
             //paintLvl(canvas);
             paintScore(canvas);
         }
-
     }
 
     //Check si la partie est gagner !
@@ -503,7 +516,6 @@ public class ColorMatchView extends SurfaceView implements SurfaceHolder.Callbac
 
     public void surfaceCreated(SurfaceHolder arg0) {
         //Log.i("-> FCT <-", "surfaceCreated");
-
         carteTileSize = (getWidth() - 60) / carteWidth;
         bleu = BitmapFactory.decodeResource(mRes, R.mipmap.bleu);
         mBleu = Bitmap.createScaledBitmap(bleu, carteTileSize - 1, carteTileSize - 1, true);
@@ -523,7 +535,6 @@ public class ColorMatchView extends SurfaceView implements SurfaceHolder.Callbac
         mVert = Bitmap.createScaledBitmap(vert, carteTileSize - 1, carteTileSize - 1, true);
         vide = BitmapFactory.decodeResource(mRes, R.mipmap.vide);
         mVide = Bitmap.createScaledBitmap(vide, carteTileSize - 1, carteTileSize - 1, true);
-
         startGame();
     }
 
@@ -562,10 +573,10 @@ public class ColorMatchView extends SurfaceView implements SurfaceHolder.Callbac
         }
 }
 
-
     //Gestion du match des couleurs
     private void CheckCarteMatch(int x, int y)
     {
+        lockCheck = true;
         if(carte[y][x] == 0) {
             int couleurGauche = getGauche(x, y);
             int couleurDroite = getDroite(x, y);
@@ -747,15 +758,12 @@ public class ColorMatchView extends SurfaceView implements SurfaceHolder.Callbac
                     else if(score == scoreTmp)
                     {
                         //Enlève du temps;
-                        long currentTime = mChrono.temps - 3;
-                        mChrono.cancel();
-                        mChrono.temps = currentTime;
-                        mChrono.start();
+                        mChrono.addTime(3000);
                     }
                 }
             }
         }
-        checkIsOver();
+        lockCheck = false;
     }
 
 
@@ -866,29 +874,37 @@ public class ColorMatchView extends SurfaceView implements SurfaceHolder.Callbac
     }
 }
 
-class Chrono extends CountDownTimer
-{
-    long temps;
-    int tempsEcoule;
-    boolean finTemps;
-    public Chrono(long startTime, long interval)
-    {
-      super(startTime, interval);
-        finTemps = false;
-        tempsEcoule = 0;
-    }
-    @Override
-    public void onTick(long millisUntilFinished)
-    {
-        temps = millisUntilFinished / 1000;
-        if(temps == 1)
-        {
-            finTemps = true;
-        }
-        tempsEcoule ++;
-    }
-    @Override
-    public void onFinish() {
+class Chrono {
+    public long temps;
+    public boolean finTemps;
+    private CountDownTimer timer;
 
+    public void addTime(long addedTimeInMillis) {
+        createNewTimer(temps*1000 - addedTimeInMillis);
+    }
+    public void killTimer()
+    {
+        timer.onFinish();
+    }
+    public void createNewTimer(long timeInMillis) {
+        if(timer != null) {
+            timer.cancel();
+        }
+        finTemps = false;
+        timer = new CountDownTimer(timeInMillis, 1000) {
+
+            @Override
+            public void onTick(final long millisUntilFinished) {
+                temps = millisUntilFinished / 1000;
+                /*if(temps == 1){
+                    finTemps = true;
+                }*/
+            }
+            @Override
+            public void onFinish() {
+                // do something here
+                finTemps = true;
+            }
+        }.start();
     }
 }
