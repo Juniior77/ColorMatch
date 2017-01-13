@@ -7,6 +7,8 @@ import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.View;
 import android.widget.Button;
 import android.widget.CompoundButton;
@@ -31,7 +33,6 @@ public class MainActivity extends AppCompatActivity {
     private int HighScore = 0;
     private boolean chronoActive = true;
     private SharedPreferences mPref;
-
 
     protected void onCreate(Bundle savedInstanceState) {
 

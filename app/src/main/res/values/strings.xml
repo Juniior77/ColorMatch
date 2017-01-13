@@ -15,5 +15,6 @@
     <string name="ACTIVE_OLD_GAME">ACTIVE_OLD_GAME</string>
     <string name="NB_COULEUR">NB_COULEUR</string>
     <string name="ACTIVE_CHRONO">ACTIVE_CHRONO</string>
+    <string name="OLD_TEMPS_RESTANT">OLD_TEMPS_RESTANT</string>
 
 </resources>

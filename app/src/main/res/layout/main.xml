@@ -105,7 +105,7 @@
         android:layout_alignStart="@+id/bPlay" />
 
     <Switch
-        android:text="Chrono"
+        android:text="Challenge"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@+id/bReprendre"
@@ -119,6 +119,7 @@
         android:textStyle="normal|bold"
         android:textAlignment="center"
         tools:ignore="HardcodedText"
-        android:textColor="?android:attr/colorBackground" />
+        android:textColor="?android:attr/colorBackground"
+        android:textColorLink="@android:color/background_light" />
 
 </RelativeLayout>

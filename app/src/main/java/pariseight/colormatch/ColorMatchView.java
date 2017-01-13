@@ -9,7 +9,6 @@ import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
-import android.graphics.drawable.BitmapDrawable;
 import android.media.MediaPlayer;
 
 import android.os.CountDownTimer;
@@ -19,8 +18,6 @@ import android.util.Log;
 import android.view.MotionEvent;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
-import android.view.View;
-import android.widget.ProgressBar;
 
 
 import java.util.ArrayList;
@@ -187,6 +184,13 @@ public class ColorMatchView extends SurfaceView implements SurfaceHolder.Callbac
         //Log.i("-> FCT <-", "carteStr: " + carteStr.toString());
         mEditor.putInt(String.valueOf(R.string.OLD_LVL), Lvl);
         mEditor.putInt(String.valueOf(R.string.OLD_SCORE), score);
+        mEditor.putBoolean("etatChrono", etatChrono);
+
+        mEditor.putInt("tailleRepereCouleur", repereCouleur.length);
+        for(int i = 0; i < repereCouleur.length; i++)
+        {
+            mEditor.putInt("tabRepereCouleur",repereCouleur[i]);
+        }
         if(etatChrono == true)
         {
             mEditor.putLong(String.valueOf(R.string.OLD_TEMPS), mChrono.temps);
@@ -209,9 +213,20 @@ public class ColorMatchView extends SurfaceView implements SurfaceHolder.Callbac
         }
         Lvl = mPref.getInt(String.valueOf(R.string.OLD_LVL), 0);
         score = mPref.getInt(String.valueOf(R.string.OLD_SCORE), 0);
+        etatChrono = mPref.getBoolean("etatChrono", true);
+
+        nombreDeCouleur = mPref.getInt("tailleRepereCouleur", 0);
+        repereCouleur = new int[nombreDeCouleur+1];
+        for(int i = 0; i < nombreDeCouleur+1; i++)
+        {
+            repereCouleur[i] = mPref.getInt("tabRepereCouleur", 0);
+        }
+
+
         if(etatChrono == true)
         {
             tempsRestant = (mPref.getLong(String.valueOf(R.string.OLD_TEMPS), 0)*1000);
+            repereProgressBar = getWidth()/(int)(tempsRestant/1000);
         }
         //Log.i("-> FCT <-", "Lvl: " + Lvl + " Score: " + score + " Chrono : " + tempsRestant);
         repereOldGame = false;
@@ -307,13 +322,14 @@ public class ColorMatchView extends SurfaceView implements SurfaceHolder.Callbac
         paint.setStrokeWidth(3);
         paint.setTextAlign(Paint.Align.LEFT);
         carte = new int[carteHeight][carteWidth];
-        repereCouleur = new int[nombreDeCouleur+1];
+        nbCoup = 0;
         if(repereOldGame == true)
         {
             loadOldCarte();
         }
         else
         {
+            repereCouleur = new int[nombreDeCouleur+1];
             loadRandCol(nombreDeCouleur);
             if(etatChrono == true)
             {
@@ -343,11 +359,13 @@ public class ColorMatchView extends SurfaceView implements SurfaceHolder.Callbac
                         tempsRestant = 85000;
                         break;
                 }
+                repereProgressBar = getWidth()/(int)(tempsRestant/1000);
             }
         }
+        Lvl = nombreDeCouleur;
         carteTopAnchor = (getHeight() - carteHeight * carteTileSize) / 2;
         carteLeftAnchor = (getWidth() - carteWidth * carteTileSize) / 2;
-        repereProgressBar = getWidth()/(int)(tempsRestant/1000);
+
 
 
         if ((cv_thread != null) && (!cv_thread.isAlive())) {
@@ -365,7 +383,10 @@ public class ColorMatchView extends SurfaceView implements SurfaceHolder.Callbac
     // dessin du gagne si gagne
     private void win(Canvas canvas) {
         canvas.drawBitmap(win, (getWidth()/2) - (win.getWidth()/2), (getHeight()/2) - (win.getHeight()/2), null);
-        Lvl += 1;
+        if(Lvl < 8) {
+            Lvl += 1;
+            nombreDeCouleur += 1;
+        }
         nbCoup = 0;
         saveHighScore();
         score = 0;
@@ -374,6 +395,10 @@ public class ColorMatchView extends SurfaceView implements SurfaceHolder.Callbac
     // dessin du gameOver si finTemps ou reste 1 couleur        Changer le bitmap en GameOver Plus de solution possible
     private void gameOver(Canvas canvas) {
         canvas.drawBitmap(gameovergrille, (getWidth()/2) - (gameovergrille.getWidth()/2), (getHeight()/2) - (gameovergrille.getHeight()/2), null);
+        if(Lvl > 1) {
+            Lvl -= 1;
+            nombreDeCouleur -= 1;
+        }
         score = 0;
         nbCoup = 0;
     }
@@ -381,18 +406,12 @@ public class ColorMatchView extends SurfaceView implements SurfaceHolder.Callbac
     //Dessine le GamerOver le temps est écouler                 Changer le bitmap en GameOver fin du temps
     private void gameOverTimer(Canvas canvas) {
         canvas.drawBitmap(gameover, (getWidth()/2) - (gameover.getWidth()/2), (getHeight()/2) - (gameover.getHeight()/2), null);
+        if(Lvl > 1) {
+            Lvl -= 1;
+            nombreDeCouleur -= 1;
+        }
         score = 0;
         nbCoup = 0;
-    }
-
-    private void paintLvl(Canvas canvas) {
-        Paint paint = new Paint();
-        paint.setColor(Color.TRANSPARENT);
-        paint.setStyle(Paint.Style.FILL);
-        canvas.drawPaint(paint);
-        paint.setColor(Color.WHITE);
-        paint.setTextSize(18);
-        canvas.drawText("Level: " + Lvl, 775, 75, paint);
     }
 
     private void paintScore(Canvas canvas) {
@@ -419,6 +438,26 @@ public class ColorMatchView extends SurfaceView implements SurfaceHolder.Callbac
         canvas.drawText("Temps: " + mChrono.temps, getWidth()/2, carteTileSize, paint);
     }
 
+    private void paintLvl(Canvas canvas) {
+        Paint paint = new Paint();
+        paint.setColor(Color.TRANSPARENT);
+        paint.setStyle(Paint.Style.FILL);
+        canvas.drawPaint(paint);
+        paint.setColor(Color.WHITE);
+        paint.setTextSize(carteTileSize/2);
+        canvas.drawText("Level: " + Lvl, getWidth()/2, carteTileSize, paint);
+    }
+
+    private void paintNbCoup(Canvas canvas) {
+        Paint paint = new Paint();
+        paint.setColor(Color.TRANSPARENT);
+        paint.setStyle(Paint.Style.FILL);
+        canvas.drawPaint(paint);
+        paint.setColor(Color.WHITE);
+        paint.setTextSize(carteTileSize/2);
+        canvas.drawText("Nombre de Coup: " + nbCoup, getWidth()/2, carteTileSize, paint);
+    }
+
     private void paintProgressBar(Canvas canvas){
         if(first == true)
         {
@@ -433,7 +472,7 @@ public class ColorMatchView extends SurfaceView implements SurfaceHolder.Callbac
                 mprogressbarvert.setWidth(position);
                 canvas.drawBitmap(mprogressbarvert, 1, 1, null);
             }
-            else if(mChrono.temps < ((int)tempsRestant/1000)/2 && mChrono.temps > ((int)tempsRestant/1000)/4)
+            else if(mChrono.temps >= ((int)tempsRestant/1000)/4)
             {
                 if(firstOrange == true) {
                     mprogressbarorange = Bitmap.createScaledBitmap(progressbarorange, position, 10, true);
@@ -444,7 +483,8 @@ public class ColorMatchView extends SurfaceView implements SurfaceHolder.Callbac
                 }
                 canvas.drawBitmap(mprogressbarorange, 1, 1, null);
             }
-            else {
+            else if(mChrono.temps < ((int)tempsRestant/1000)/4)
+            {
                 if (firstRouge == true) {
                     mprogressbarrouge = Bitmap.createScaledBitmap(progressbarrouge, position, 10, true);
                     firstRouge = false;
@@ -526,15 +566,18 @@ public class ColorMatchView extends SurfaceView implements SurfaceHolder.Callbac
             {
                 paintProgressBar(canvas);
                 paintcarte(canvas);
-                paintTemps(canvas);
+                paintLvl(canvas);
+                //paintNbCoup(canvas);
+                //paintTemps(canvas);
                 paintScore(canvas);
             }
         }
         else
         {
             paintcarte(canvas);
-            //paintLvl(canvas);
+            paintLvl(canvas);
             paintScore(canvas);
+            //paintNbCoup(canvas);
         }
     }
 
@@ -628,7 +671,7 @@ public class ColorMatchView extends SurfaceView implements SurfaceHolder.Callbac
     //Gestion du match des couleurs
     private void CheckCarteMatch(int x, int y)
     {
-        lockCheck = true;
+        //lockCheck = true;
         if(carte[y][x] == 0) {
             int couleurGauche = getGauche(x, y);
             int couleurDroite = getDroite(x, y);
@@ -654,10 +697,10 @@ public class ColorMatchView extends SurfaceView implements SurfaceHolder.Callbac
                 repereCouleur[couleurGauche] -=1;
                 repereCouleur[couleurDroite] -=1;
 
-                Log.i("->FCT<-", "repereCouleur["+couleurBas+"]");
-                Log.i("->FCT<-", "repereCouleur["+couleurHaut+"]");
-                Log.i("->FCT<-", "repereCouleur["+couleurGauche+"]");
-                Log.i("->FCT<-", "repereCouleur["+couleurDroite+"]");
+                //Log.i("->FCT<-", "repereCouleur["+couleurBas+"]");
+                //Log.i("->FCT<-", "repereCouleur["+couleurHaut+"]");
+                //Log.i("->FCT<-", "repereCouleur["+couleurGauche+"]");
+                //Log.i("->FCT<-", "repereCouleur["+couleurDroite+"]");
 
                 score += 120;
             }
@@ -673,9 +716,9 @@ public class ColorMatchView extends SurfaceView implements SurfaceHolder.Callbac
                     repereCouleur[couleurHaut] -=1;
                     repereCouleur[couleurBas] -=1;
 
-                    Log.i("->FCT<-", "repereCouleur["+couleurDroite+"]");
-                    Log.i("->FCT<-", "repereCouleur["+couleurHaut+"]");
-                    Log.i("->FCT<-", "repereCouleur["+couleurBas+"]");
+                    //Log.i("->FCT<-", "repereCouleur["+couleurDroite+"]");
+                    //Log.i("->FCT<-", "repereCouleur["+couleurHaut+"]");
+                    //Log.i("->FCT<-", "repereCouleur["+couleurBas+"]");
 
                     score += 60;
                 }
@@ -689,9 +732,9 @@ public class ColorMatchView extends SurfaceView implements SurfaceHolder.Callbac
                     repereCouleur[couleurDroite] -=1;
                     repereCouleur[couleurGauche] -=1;
 
-                    Log.i("->FCT<-", "repereCouleur["+couleurHaut+"]= "+repereCouleur[couleurHaut]);
-                    Log.i("->FCT<-", "repereCouleur["+couleurDroite+"]= "+repereCouleur[couleurHaut]);
-                    Log.i("->FCT<-", "repereCouleur["+couleurGauche+"]= "+repereCouleur[couleurHaut]);
+                    //Log.i("->FCT<-", "repereCouleur["+couleurHaut+"]= "+repereCouleur[couleurHaut]);
+                    //Log.i("->FCT<-", "repereCouleur["+couleurDroite+"]= "+repereCouleur[couleurHaut]);
+                    //Log.i("->FCT<-", "repereCouleur["+couleurGauche+"]= "+repereCouleur[couleurHaut]);
 
                     score += 60;
                 }
@@ -705,9 +748,9 @@ public class ColorMatchView extends SurfaceView implements SurfaceHolder.Callbac
                     repereCouleur[couleurHaut] -=1;
                     repereCouleur[couleurBas] -=1;
 
-                    Log.i("->FCT<-", "repereCouleur["+couleurGauche+"]");
-                    Log.i("->FCT<-", "repereCouleur["+couleurHaut+"]");
-                    Log.i("->FCT<-", "repereCouleur["+couleurBas+"]");
+                    //Log.i("->FCT<-", "repereCouleur["+couleurGauche+"]");
+                    //Log.i("->FCT<-", "repereCouleur["+couleurHaut+"]");
+                    //Log.i("->FCT<-", "repereCouleur["+couleurBas+"]");
 
                     score += 60;
                 }
@@ -721,9 +764,9 @@ public class ColorMatchView extends SurfaceView implements SurfaceHolder.Callbac
                     repereCouleur[couleurDroite] -=1;
                     repereCouleur[couleurGauche] -=1;
 
-                    Log.i("->FCT<-", "repereCouleur["+couleurBas+"]");
-                    Log.i("->FCT<-", "repereCouleur["+couleurDroite+"]");
-                    Log.i("->FCT<-", "repereCouleur["+couleurGauche+"]");
+                    //Log.i("->FCT<-", "repereCouleur["+couleurBas+"]");
+                    //Log.i("->FCT<-", "repereCouleur["+couleurDroite+"]");
+                    //Log.i("->FCT<-", "repereCouleur["+couleurGauche+"]");
 
                     score += 60;
                 }
@@ -738,8 +781,8 @@ public class ColorMatchView extends SurfaceView implements SurfaceHolder.Callbac
                         repereCouleur[couleurDroite] -=1;
                         repereCouleur[couleurHaut] -=1;
 
-                        Log.i("->FCT<-", "repereCouleur["+couleurDroite+"]");
-                        Log.i("->FCT<-", "repereCouleur["+couleurHaut+"]");
+                        //Log.i("->FCT<-", "repereCouleur["+couleurDroite+"]");
+                        //Log.i("->FCT<-", "repereCouleur["+couleurHaut+"]");
 
                         score += 40;
                     }
@@ -751,8 +794,8 @@ public class ColorMatchView extends SurfaceView implements SurfaceHolder.Callbac
                         repereCouleur[couleurHaut] -=1;
                         repereCouleur[couleurGauche] -=1;
 
-                        Log.i("->FCT<-", "repereCouleur["+couleurHaut+"]");
-                        Log.i("->FCT<-", "repereCouleur["+couleurGauche+"]");
+                        //Log.i("->FCT<-", "repereCouleur["+couleurHaut+"]");
+                        //Log.i("->FCT<-", "repereCouleur["+couleurGauche+"]");
 
                         score += 40;
                     }
@@ -764,8 +807,8 @@ public class ColorMatchView extends SurfaceView implements SurfaceHolder.Callbac
                         repereCouleur[couleurGauche] -=1;
                         repereCouleur[couleurBas] -=1;
 
-                        Log.i("->FCT<-", "repereCouleur["+couleurGauche+"]");
-                        Log.i("->FCT<-", "repereCouleur["+couleurBas+"]");
+                        //Log.i("->FCT<-", "repereCouleur["+couleurGauche+"]");
+                        //Log.i("->FCT<-", "repereCouleur["+couleurBas+"]");
 
                         score += 40;
                     }
@@ -777,8 +820,8 @@ public class ColorMatchView extends SurfaceView implements SurfaceHolder.Callbac
                         repereCouleur[couleurBas] -=1;
                         repereCouleur[couleurDroite] -=1;
 
-                        Log.i("->FCT<-", "repereCouleur["+couleurBas+"]");
-                        Log.i("->FCT<-", "repereCouleur["+couleurDroite+"]");
+                        //Log.i("->FCT<-", "repereCouleur["+couleurBas+"]");
+                        //Log.i("->FCT<-", "repereCouleur["+couleurDroite+"]");
 
                         score += 40;
                     }
@@ -789,8 +832,8 @@ public class ColorMatchView extends SurfaceView implements SurfaceHolder.Callbac
 
                         repereCouleur[couleurBas] -=1;
                         repereCouleur[couleurHaut] -=1;
-                        Log.i("->FCT<-", "repereCouleur["+couleurBas+"]");
-                        Log.i("->FCT<-", "repereCouleur["+couleurHaut+"]");
+                        //Log.i("->FCT<-", "repereCouleur["+couleurBas+"]");
+                        //Log.i("->FCT<-", "repereCouleur["+couleurHaut+"]");
 
                         score += 40;
                     }
@@ -802,20 +845,23 @@ public class ColorMatchView extends SurfaceView implements SurfaceHolder.Callbac
                         repereCouleur[couleurDroite] -=1;
                         repereCouleur[couleurGauche] -=1;
 
-                        Log.i("->FCT<-", "repereCouleur["+couleurDroite+"]");
-                        Log.i("->FCT<-", "repereCouleur["+couleurGauche+"]");
+                        //Log.i("->FCT<-", "repereCouleur["+couleurDroite+"]");
+                        //Log.i("->FCT<-", "repereCouleur["+couleurGauche+"]");
 
                         score += 40;
                     }
                     else if(score == scoreTmp)
                     {
-                        //Enlève du temps;
-                        mChrono.addTime(3000);
+                        if(mChrono != null)
+                        {
+                            //Enlève du temps;
+                            mChrono.addTime(2000);
+                        }
                     }
                 }
             }
         }
-        lockCheck = false;
+        //lockCheck = false;
     }
 
 
@@ -906,6 +952,7 @@ public class ColorMatchView extends SurfaceView implements SurfaceHolder.Callbac
         {
             if(posClickY >= 0 && posClickY<= 13)
             {
+                nbCoup++;
                 //Log.i("-> FCT <-", "BlockSelectionné: " + carte[posClickY][posClickX]);
                 CheckCarteMatch(posClickX, posClickY);
             }
