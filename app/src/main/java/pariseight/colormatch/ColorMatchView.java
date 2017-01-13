@@ -55,6 +55,12 @@ public class ColorMatchView extends SurfaceView implements SurfaceHolder.Callbac
     private Bitmap win;
     private Bitmap gameover;
     private Bitmap gameovergrille;
+    private Bitmap progressbarvert;
+    private Bitmap mprogressbarvert;
+    private Bitmap progressbarorange;
+    private Bitmap mprogressbarorange;
+    private Bitmap progressbarrouge;
+    private Bitmap mprogressbarrouge;
 
     // Declaration des objets Ressources et Context permettant d'acceder aux ressources de notre application et de les charger
     private Resources mRes;
@@ -100,6 +106,8 @@ public class ColorMatchView extends SurfaceView implements SurfaceHolder.Callbac
     public int[] repereCouleur;
     public boolean lockCheck;
     public boolean stateOver;
+    public int repereProgressBar;
+    public boolean first = true, firstOrange = true, firstRouge = true;
 
     //Declaration du mediaPlayer pour gérer les son du jeux
     private MediaPlayer mMediaPlayer = new MediaPlayer();
@@ -134,6 +142,9 @@ public class ColorMatchView extends SurfaceView implements SurfaceHolder.Callbac
         win = BitmapFactory.decodeResource(mRes, R.drawable.gagner);
         gameover = BitmapFactory.decodeResource(mRes, R.drawable.gameover);
         gameovergrille = BitmapFactory.decodeResource(mRes, R.drawable.gameovergrille);
+        progressbarvert = BitmapFactory.decodeResource(mRes, R.drawable.progressbarvert);
+        progressbarorange = BitmapFactory.decodeResource(mRes, R.drawable.progressbarorange);
+        progressbarrouge = BitmapFactory.decodeResource(mRes, R.drawable.progressbarrouge);
 
         // creation du thread
         cv_thread = new Thread(this);
@@ -336,6 +347,8 @@ public class ColorMatchView extends SurfaceView implements SurfaceHolder.Callbac
         }
         carteTopAnchor = (getHeight() - carteHeight * carteTileSize) / 2;
         carteLeftAnchor = (getWidth() - carteWidth * carteTileSize) / 2;
+        repereProgressBar = getWidth()/(int)(tempsRestant/1000);
+
 
         if ((cv_thread != null) && (!cv_thread.isAlive())) {
             cv_thread.start();
@@ -398,12 +411,50 @@ public class ColorMatchView extends SurfaceView implements SurfaceHolder.Callbac
         paint.setStyle(Paint.Style.FILL);
         canvas.drawPaint(paint);
         paint.setColor(Color.WHITE);
-        if(mChrono.temps<=15)
+        if(mChrono.temps<=((int)tempsRestant/1000)/4)
         {
             paint.setColor(Color.RED);
         }
         paint.setTextSize(carteTileSize/2);
         canvas.drawText("Temps: " + mChrono.temps, getWidth()/2, carteTileSize, paint);
+    }
+
+    private void paintProgressBar(Canvas canvas){
+        if(first == true)
+        {
+            mprogressbarvert = Bitmap.createScaledBitmap(progressbarvert, getWidth(), 10, true);
+            canvas.drawBitmap(mprogressbarvert, 1, 1, null);
+            first = false;
+        }
+        else {
+            int position = repereProgressBar*(int)mChrono.temps;
+            if(mChrono.temps >= ((int)tempsRestant/1000)/2)
+            {
+                mprogressbarvert.setWidth(position);
+                canvas.drawBitmap(mprogressbarvert, 1, 1, null);
+            }
+            else if(mChrono.temps < ((int)tempsRestant/1000)/2 && mChrono.temps > ((int)tempsRestant/1000)/4)
+            {
+                if(firstOrange == true) {
+                    mprogressbarorange = Bitmap.createScaledBitmap(progressbarorange, position, 10, true);
+                    firstOrange = false;
+                }
+                else {
+                    mprogressbarorange.setWidth(position);
+                }
+                canvas.drawBitmap(mprogressbarorange, 1, 1, null);
+            }
+            else {
+                if (firstRouge == true) {
+                    mprogressbarrouge = Bitmap.createScaledBitmap(progressbarrouge, position, 10, true);
+                    firstRouge = false;
+                }
+                else {
+                    mprogressbarrouge.setWidth(position);
+                }
+                canvas.drawBitmap(mprogressbarrouge, 1, 1, null);
+            }
+        }
     }
 
     // dessin de la carte du jeu
@@ -473,6 +524,7 @@ public class ColorMatchView extends SurfaceView implements SurfaceHolder.Callbac
             }
             else
             {
+                paintProgressBar(canvas);
                 paintcarte(canvas);
                 paintTemps(canvas);
                 paintScore(canvas);
